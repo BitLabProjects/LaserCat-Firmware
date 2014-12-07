@@ -47,6 +47,11 @@ uint8_t serial_get_rx_buffer_count()
   return (RX_BUFFER_SIZE - (rtail-serial_rx_buffer_head));
 }
 
+uint8_t serial_has_bytes() {
+  //!= 0 if there are bytes to read
+  return serial_rx_buffer_tail - serial_rx_buffer_head;
+}
+
 
 // Returns the number of bytes used in the TX serial buffer.
 // NOTE: Not used except for debugging and ensuring no TX bottlenecks.

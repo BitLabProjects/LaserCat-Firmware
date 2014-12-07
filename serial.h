@@ -53,6 +53,9 @@ void serial_init();
 // Writes one byte to the TX serial buffer. Called by main program.
 void serial_write(uint8_t data);
 
+//SB!Function to call to check wether there are bytes to read. This removes the need to use a special byte in serial_read to indicate 'no bytes'
+uint8_t serial_has_bytes();
+
 // Fetches the first byte in the serial read buffer. Called by main program.
 uint8_t serial_read();
 

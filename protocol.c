@@ -79,9 +79,10 @@ void protocol_main_loop()
   //report_init_message();
   while(true)
   {
-    c = serial_read();
-    if (c != SERIAL_NO_DATA)
+    if (serial_has_bytes()) {
+      c = serial_read();
       serial_write(c);
+    }
   }
 
   // Check for and report alarm state after a reset, error, or an initial power up.
