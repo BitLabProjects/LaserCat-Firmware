@@ -64,6 +64,67 @@ static void protocol_execute_line(char *line)
   }
 }
 
+#define CI_START_CHAR '#' //35 decimal
+
+#define CISTATE_IDLE 0
+#define CISTATE_STARTCHAR 1
+#define CISTATE_READINGPACKET 3
+
+#define INIT_COMMAND 1
+#define OK_COMMAND 8
+#define ERROR_COMMAND 9
+
+struct CommandInterpreter {
+  uint8_t state;
+  uint8_t length;
+  uint8_t data[20];
+  uint8_t data_count;
+};
+
+struct CommandInterpreter commandInterpreter;
+
+void command_send(uint8_t command) {
+  serial_write(CI_START_CHAR);
+  serial_write(1); //Length
+  serial_write(command); //Command ID
+}
+
+void command_receive_and_execute() {
+  uint8_t execute = false;
+  uint8_t c;
+  if (serial_has_bytes()) {
+    c = serial_read();
+    switch(commandInterpreter.state) {
+      case CISTATE_IDLE:
+        if (c == CI_START_CHAR)
+          commandInterpreter.state = CISTATE_STARTCHAR;
+        break;
+      case CISTATE_STARTCHAR:
+        commandInterpreter.length = c;
+        commandInterpreter.data_count = 0;
+        commandInterpreter.state = CISTATE_READINGPACKET;
+        break;
+      case CISTATE_READINGPACKET:
+        commandInterpreter.data[commandInterpreter.data_count] = c;
+        commandInterpreter.data_count += 1;
+        if (commandInterpreter.data_count == commandInterpreter.length) {
+            execute = true;
+            commandInterpreter.state = CISTATE_IDLE;
+        }
+        break;
+    }
+  }
+  if (execute) {
+    switch (commandInterpreter.data[0]) {
+      case INIT_COMMAND:
+        command_send(OK_COMMAND);
+        break;
+      default:
+        command_send(ERROR_COMMAND);
+        break;
+    }
+  }
+}
 
 /* 
   GRBL PRIMARY LOOP:
@@ -79,10 +140,7 @@ void protocol_main_loop()
   //report_init_message();
   while(true)
   {
-    if (serial_has_bytes()) {
-      c = serial_read();
-      serial_write(c);
-    }
+    command_receive_and_execute();
   }
 
   // Check for and report alarm state after a reset, error, or an initial power up.
