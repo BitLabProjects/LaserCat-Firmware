@@ -35,10 +35,10 @@
 void stepper_init();
 
 // Enable steppers, but cycle does not start unless called by motion control or runtime command.
-void st_wake_up();
+void st_wake_up(uint8_t setup_and_enable_motors);
 
 // Immediately disables steppers
-void st_go_idle();
+void st_go_idle(uint8_t delay_and_disable_steppers);
 
 // Reset the stepper subsystem variables       
 void st_reset();
@@ -48,9 +48,22 @@ typedef struct {
   uint32_t steps[N_AXIS];
   uint32_t step_event_count;
 } st_block_t;
+typedef struct {
+  uint16_t n_step;          // Number of step events to be executed for this segment
+  uint8_t st_block_index;   // Stepper block data index. Uses this information to execute this segment.
+  uint16_t cycles_per_tick; // Step distance traveled per ISR tick, aka step rate.
+  //#ifdef ADAPTIVE_MULTI_AXIS_STEP_SMOOTHING
+  uint8_t amass_level;    // Indicates AMASS level for the ISR to execute this segment
+  //#else
+  uint8_t prescaler;      // Without AMASS, a prescaler is required to adjust for slow timing.
+  //#endif
+} segment_t;
 
 void stepper_set_settings(uint8_t step_invert_mask, uint8_t dir_invert_mask);
 
 void stepper_store_planner_block(uint8_t blockIndex, st_block_t* block);
+void stepper_store_segment_block(segment_t* segment);
+void stepper_interrupt();
+uint8_t stepper_has_more_segment_buffer();
 
 #endif

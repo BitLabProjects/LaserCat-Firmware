@@ -72,7 +72,7 @@ static st_block_t st_block_buffer[SEGMENT_BUFFER_SIZE-1];
 // algorithm to execute, which are "checked-out" incrementally from the first block in the
 // planner buffer. Once "checked-out", the steps in the segments buffer cannot be modified by 
 // the planner, where the remaining planner block steps still can.
-typedef struct {
+/*typedef struct {
   uint16_t n_step;          // Number of step events to be executed for this segment
   uint8_t st_block_index;   // Stepper block data index. Uses this information to execute this segment.
   uint16_t cycles_per_tick; // Step distance traveled per ISR tick, aka step rate.
@@ -81,7 +81,7 @@ typedef struct {
   #else
     uint8_t prescaler;      // Without AMASS, a prescaler is required to adjust for slow timing.
   #endif
-} segment_t;
+} segment_t;*/
 static segment_t segment_buffer[SEGMENT_BUFFER_SIZE];
 
 // Stepper ISR data struct. Contains the running data for the main stepper ISR.
@@ -196,17 +196,29 @@ void stepper_store_planner_block(uint8_t blockIndex, st_block_t* block)
 {
   st_block_buffer[blockIndex] = *block;
 }
+void stepper_store_segment_block(segment_t* segment)
+{
+  // Segment complete! Increment segment buffer indices.
+  segment_buffer[segment_buffer_head] = *segment;
+  segment_buffer_head = segment_next_head;
+  if (++segment_next_head == SEGMENT_BUFFER_SIZE) { segment_next_head = 0; }
+}
+uint8_t stepper_has_more_segment_buffer()
+{
+  return segment_buffer_tail != segment_next_head;
+}
 
 // Stepper state initialization. Cycle should only start if the st.cycle_start flag is
 // enabled. Startup init and limits call this function but shouldn't start the cycle.
-void st_wake_up() 
+void st_wake_up(uint8_t setup_and_enable_motors) 
 {
-/*
+
   // Enable stepper drivers.
   if (bit_istrue(settings.flags,BITFLAG_INVERT_ST_ENABLE)) { STEPPERS_DISABLE_PORT |= (1<<STEPPERS_DISABLE_BIT); }
   else { STEPPERS_DISABLE_PORT &= ~(1<<STEPPERS_DISABLE_BIT); }
 
-  if (sys.state & (STATE_CYCLE | STATE_HOMING)){
+  //if (sys.state & (STATE_CYCLE | STATE_HOMING)) {
+  if (setup_and_enable_motors) {
     // Initialize stepper output bits
     st.dir_outbits = dir_port_invert_mask; 
     st.step_outbits = step_port_invert_mask;
@@ -216,7 +228,7 @@ void st_wake_up()
       // Set total step pulse time after direction pin set. Ad hoc computation from oscilloscope.
       st.step_pulse_time = -(((settings.pulse_microseconds+STEP_PULSE_DELAY-2)*TICKS_PER_MICROSECOND) >> 3);
       // Set delay between direction pin write and step command.
-      OCR0A = -(((settings.pulse_microseconds)*TICKS_PER_MICROSECOND) >> 3);
+      //TODO OCR0A = -(((settings.pulse_microseconds)*TICKS_PER_MICROSECOND) >> 3);
     #else // Normal operation
       // Set step pulse time. Ad hoc computation from oscilloscope. Uses two's complement.
       st.step_pulse_time = -(((settings.pulse_microseconds-2)*TICKS_PER_MICROSECOND) >> 3);
@@ -225,24 +237,26 @@ void st_wake_up()
     // Enable Stepper Driver Interrupt
     //TODO
     //TIMSK1 |= (1<<OCIE1A);
+    T1CONbits.TMR1ON = 1;
   }
-*/
 }
 
 
 // Stepper shutdown
-void st_go_idle() 
+void st_go_idle(uint8_t delay_and_disable_steppers) 
 {
-/*
+
   // Disable Stepper Driver Interrupt. Allow Stepper Port Reset Interrupt to finish, if active.
   //TODO
   //TIMSK1 &= ~(1<<OCIE1A); // Disable Timer1 interrupt
   //TCCR1B = (TCCR1B & ~((1<<CS12) | (1<<CS11))) | (1<<CS10); // Reset clock to no prescaling.
+  T1CONbits.TMR1ON = 0;
   busy = false;
   
   // Set stepper driver idle state, disabled or enabled, depending on settings and circumstances.
   bool pin_state = false; // Keep enabled.
-  if (((settings.stepper_idle_lock_time != 0xff) || bit_istrue(sys.execute,EXEC_ALARM)) && sys.state != STATE_HOMING) {
+  //if (((settings.stepper_idle_lock_time != 0xff) || bit_istrue(sys.execute,EXEC_ALARM)) && sys.state != STATE_HOMING) {
+  if (delay_and_disable_steppers) {
     // Force stepper dwell to lock axes for a defined amount of time to ensure the axes come to a complete
     // stop and not drift from residual inertial forces at the end of the last movement.
     delay_ms(settings.stepper_idle_lock_time);
@@ -251,7 +265,7 @@ void st_go_idle()
   if (bit_istrue(settings.flags,BITFLAG_INVERT_ST_ENABLE)) { pin_state = !pin_state; } // Apply pin invert.
   if (pin_state) { STEPPERS_DISABLE_PORT |= (1<<STEPPERS_DISABLE_BIT); }
   else { STEPPERS_DISABLE_PORT &= ~(1<<STEPPERS_DISABLE_BIT); }
-*/
+
 }
 
 
@@ -306,10 +320,9 @@ void st_go_idle()
 // with probing and homing cycles that require true real-time positions.
 //TODO
 //ISR(TIMER1_COMPA_vect)
-void interruptTODO_TIMER1_COMPA_vect()
-{   
-/*     
-// SPINDLE_ENABLE_PORT ^= 1<<SPINDLE_ENABLE_BIT; // Debug: Used to time ISR
+void stepper_interrupt()
+{      
+  // SPINDLE_ENABLE_PORT ^= 1<<SPINDLE_ENABLE_BIT; // Debug: Used to time ISR
   if (busy) { return; } // The busy-flag is used to avoid reentering this interrupt
   
   // Set the direction pins a couple of nanoseconds before we step the steppers
@@ -345,8 +358,8 @@ void interruptTODO_TIMER1_COMPA_vect()
       #endif
 
       // Initialize step segment timing per step and load number of steps to execute.
-	  //TODO
       //OCR1A = st.exec_segment->cycles_per_tick;
+      //TODO TMR1 = 0xFFFF - st.exec_segment->cycles_per_tick;
 
       st.step_count = st.exec_segment->n_step; // NOTE: Can sometimes be zero when moving slow.
       // If the new segment starts a new planner block, initialize stepper variables and counters.
@@ -372,7 +385,7 @@ void interruptTODO_TIMER1_COMPA_vect()
       
     } else {
       // Segment buffer empty. Shutdown.
-      st_go_idle();
+      st_go_idle(false);
       bit_true_atomic(sys.execute,EXEC_CYCLE_STOP); // Flag main program for cycle end
       return; // Nothing to do but exit.
     }  
@@ -433,7 +446,6 @@ void interruptTODO_TIMER1_COMPA_vect()
   st.step_outbits ^= step_port_invert_mask;  // Apply step port invert mask    
   busy = false;
 // SPINDLE_ENABLE_PORT ^= 1<<SPINDLE_ENABLE_BIT; // Debug: Used to time ISR
-*/
 }
 
 
@@ -473,7 +485,7 @@ ISR(TIMER0_OVF_vect)
 void st_reset()
 {
   // Initialize stepper driver idle state.
-  st_go_idle();
+  st_go_idle(false);
   
   // Initialize stepper algorithm variables.
   //memset(&prep, 0, sizeof(prep));
@@ -504,6 +516,12 @@ void stepper_init()
   STEPPERS_DISABLE_DDR |= 1<<STEPPERS_DISABLE_BIT;
   DIRECTION_DDR |= DIRECTION_MASK;
 
+  T1CONbits.T1CKPS0 = 0; //Prescaler 1:1
+  T1CONbits.T1CKPS1 = 0;
+  T1CONbits.TMR1CS = 0; //Fosc/4, uses the CPU clock source
+  T1CONbits.TMR1ON = 0; //Turn timer off
+  PIE1bits.TMR1IE = 1;
+
 //TODO
 /*
   // Configure Timer 1: Stepper Driver Interrupt
@@ -524,3 +542,4 @@ void stepper_init()
   #endif
 */
 }
+

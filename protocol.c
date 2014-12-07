@@ -73,9 +73,16 @@ static void protocol_execute_line(char *line)
 #define INIT_COMMAND 1
 #define RESET_COMMAND 2
 #define SETSETTINGS_COMMAND 3
+#define WAKEUP_COMMAND 4
+#define GOIDLE_COMMAND 5
 #define STOREPLANNERBLOCK_COMMAND 6
+#define STORESEGMENTBLOCK_COMMAND 7
 #define OK_COMMAND 8
 #define ERROR_COMMAND 9
+#define ASKPOSITION_COMMAND 10
+#define OKPOSITION_COMMAND 11
+#define ASKHASMORESEGMENTBUFFER_COMMAND 12
+#define OKSEGMENTBUFFER_COMMAND 13
 
 struct CommandInterpreter {
   uint8_t state;
@@ -90,6 +97,20 @@ void command_send(uint8_t command) {
   serial_write(CI_START_CHAR);
   serial_write(1); //Length
   serial_write(command); //Command ID
+}
+void command_send_byte(uint8_t command, uint8_t data) {
+  serial_write(CI_START_CHAR);
+  serial_write(2); //Length
+  serial_write(command); //Command ID
+  serial_write(data);
+}
+void command_send_array(uint8_t command, uint8_t* data, uint8_t data_length) {
+  serial_write(CI_START_CHAR);
+  serial_write(1 + data_length); //Length
+  serial_write(command); //Command ID
+  int i;
+  for(i=0; i<data_length; i++)
+    serial_write(data[i]);
 }
 
 void command_receive_and_execute() {
@@ -144,6 +165,24 @@ void command_receive_and_execute() {
         command_send(OK_COMMAND);
         break;
 
+      case WAKEUP_COMMAND:
+        if (commandInterpreter.length != 2) {
+          command_send(ERROR_COMMAND);
+          break;
+        }
+        st_wake_up(commandInterpreter.data[1]);
+        command_send(OK_COMMAND);
+        break;
+
+      case GOIDLE_COMMAND:
+        if (commandInterpreter.length != 2) {
+          command_send(ERROR_COMMAND);
+          break;
+        }
+        st_go_idle(commandInterpreter.data[1]);
+        command_send(OK_COMMAND);
+        break;
+
       case STOREPLANNERBLOCK_COMMAND:
         if (commandInterpreter.length != 19) {
           command_send(ERROR_COMMAND);
@@ -158,6 +197,28 @@ void command_receive_and_execute() {
           *(dst_ptr++) = *(src_ptr++);
         stepper_store_planner_block(blockIndex, &block);
         command_send(OK_COMMAND);
+        break;
+
+      case STORESEGMENTBLOCK_COMMAND:
+        if (commandInterpreter.length != 8) { 
+          command_send(ERROR_COMMAND);
+          break;
+        }
+        segment_t segment;
+        uint8_t* dst_ptr = (uint8_t*)&segment;
+        uint8_t* src_ptr = (uint8_t*)&commandInterpreter.data[1];
+        for(i=0; i<7; i++)
+          *(dst_ptr++) = *(src_ptr++);
+        stepper_store_segment_block(&segment);
+        command_send(OK_COMMAND);
+        break;
+
+      case ASKPOSITION_COMMAND:
+        command_send_array(OKPOSITION_COMMAND, (uint8_t*)&sys.position, 12); //3*int32_t
+        break;
+
+      case ASKHASMORESEGMENTBUFFER_COMMAND:
+        command_send_byte(OKSEGMENTBUFFER_COMMAND, stepper_has_more_segment_buffer());
         break;
 
       default:
@@ -353,7 +414,7 @@ void protocol_execute_runtime()
       if (sys.state == STATE_QUEUED) {
         sys.state = STATE_CYCLE;
         //TODO st_prep_buffer(); // Initialize step segment buffer before beginning cycle.
-        st_wake_up();
+        //TODO st_wake_up();
         if (bit_istrue(settings.flags,BITFLAG_AUTO_START)) {
           sys.auto_start = true; // Re-enable auto start after feed hold.
         } else {

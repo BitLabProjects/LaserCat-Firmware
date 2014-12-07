@@ -110,5 +110,10 @@ void interrupt int_low() {
     serial_tx_interrupt();
   }
 
+  if (PIR1bits.TMR1IF) {
+    PIR1bits.TMR1IF = 0;
+    stepper_interrupt();
+  }
+
   INTCONbits.GIE = 1;
 }

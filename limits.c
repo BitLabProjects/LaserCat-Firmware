@@ -188,7 +188,7 @@ void limits_go_home(uint8_t cycle_mask)
     #endif
     
     //TODO st_prep_buffer(); // Prep and fill segment buffer from newly planned block.
-    st_wake_up(); // Initiate motion
+    //TODO st_wake_up(); // Initiate motion
     do {
       // Check limit state. Lock out cycle axes when they change.
       limit_state = LIMIT_PIN;
