@@ -71,6 +71,7 @@ static void protocol_execute_line(char *line)
 #define CISTATE_READINGPACKET 3
 
 #define INIT_COMMAND 1
+#define RESET_COMMAND 2
 #define OK_COMMAND 8
 #define ERROR_COMMAND 9
 
@@ -117,8 +118,15 @@ void command_receive_and_execute() {
   if (execute) {
     switch (commandInterpreter.data[0]) {
       case INIT_COMMAND:
+        stepper_init();
         command_send(OK_COMMAND);
         break;
+
+      case RESET_COMMAND:
+        st_reset();
+        command_send(OK_COMMAND);
+        break;
+
       default:
         command_send(ERROR_COMMAND);
         break;

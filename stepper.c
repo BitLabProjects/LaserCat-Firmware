@@ -463,27 +463,27 @@ ISR(TIMER0_OVF_vect)
 // Reset and clear stepper subsystem variables
 void st_reset()
 {
-/*
   // Initialize stepper driver idle state.
   st_go_idle();
   
   // Initialize stepper algorithm variables.
-  memset(&prep, 0, sizeof(prep));
+  //memset(&prep, 0, sizeof(prep));
+  //pl_block = NULL;  // Planner block pointer used by segment buffer
+
   memset(&st, 0, sizeof(st));
   st.exec_segment = NULL;
-  pl_block = NULL;  // Planner block pointer used by segment buffer
   segment_buffer_tail = 0;
   segment_buffer_head = 0; // empty = tail
   segment_next_head = 1;
   busy = false;
   
-  st_generate_step_dir_invert_masks();
+  //TODO farle arrivare dai settings
+  //st_generate_step_dir_invert_masks();
       
   // Initialize step and direction port pins.
 
   STEP_PORT = (STEP_PORT & ~STEP_MASK) | step_port_invert_mask;
   DIRECTION_PORT = (DIRECTION_PORT & ~DIRECTION_MASK) | dir_port_invert_mask;
-*/
 }
 
 

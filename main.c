@@ -85,7 +85,7 @@ int main(void)
     //coolant_init();
     //limits_init(); 
     //probe_init();
-    st_reset(); // Clear stepper subsystem variables.
+    //st_reset(); // Clear stepper subsystem variables.
 
     // Reset system variables.
     sys.abort = false;
