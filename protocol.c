@@ -145,18 +145,19 @@ void command_receive_and_execute() {
         break;
 
       case STOREPLANNERBLOCK_COMMAND:
-        if (commandInterpreter.length != 18) { 
+        if (commandInterpreter.length != 19) {
           command_send(ERROR_COMMAND);
           break;
         }
         uint8_t blockIndex = commandInterpreter.data[1];
-        struct st_block_t block;
+        st_block_t block;
         int i;
         uint8_t* dst_ptr = (uint8_t*)&block;
-        uint8_t* src_ptr = &commandInterpreter.data[2];
+        uint8_t* src_ptr = (uint8_t*)&commandInterpreter.data[2];
         for(i=0; i<17; i++)
           *(dst_ptr++) = *(src_ptr++);
         stepper_store_planner_block(blockIndex, &block);
+        command_send(OK_COMMAND);
         break;
 
       default:
