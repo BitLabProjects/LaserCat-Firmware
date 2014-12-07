@@ -27,7 +27,7 @@
 //#include <avr/interrupt.h>
 #include "system.h"
 #include "serial.h"
-#include "motion_control.h"
+//#include "motion_control.h"
 #include "protocol.h"
 
 
@@ -38,12 +38,6 @@ volatile uint8_t serial_rx_buffer_tail = 0;
 uint8_t serial_tx_buffer[TX_BUFFER_SIZE];
 uint8_t serial_tx_buffer_head = 0;
 volatile uint8_t serial_tx_buffer_tail = 0;
-
-
-#ifdef ENABLE_XONXOFF
-  volatile uint8_t flow_ctrl = XON_SENT; // Flow control state variable
-#endif
-  
 
 // Returns the number of bytes used in the RX serial buffer.
 uint8_t serial_get_rx_buffer_count()
@@ -63,6 +57,7 @@ uint8_t serial_get_tx_buffer_count()
   return (TX_BUFFER_SIZE - (ttail-serial_tx_buffer_head));
 }
 
+#define USE_SERIAL_INTERRUPTS
 
 void serial_init()
 {
@@ -88,15 +83,36 @@ void serial_init()
 	  
   // defaults to 8-bit, no parity, 1 stop bit
 */
-}
 
+  TXSTAbits.BRGH = 1; //BRG ad alta velocità
+  BAUDCONbits.BRG16 = 1;  //16bit per il SPBRG
+  //SPBRG = 103; // 1200 baud/sec a 4MHz
+  SPBRG = 103; // 115000 baud/sec a 48MHz
+  //SPBRG = 13; // 115000 baud/sec a 8MHz
+
+  TXSTAbits.SYNC = 0;
+  TXSTAbits.TXEN = 1;
+
+  RCSTAbits.SPEN = 1;
+  RCSTAbits.CREN = 1;
+
+#ifdef USE_SERIAL_INTERRUPTS
+  INTCONbits.GIE = 1;
+  INTCONbits.PEIE = 1;
+  PIR1bits.RCIF = 0;
+  PIE1bits.RCIE = 1;
+#endif
+}
 
 // Writes one byte to the TX serial buffer. Called by main program.
 // TODO: Check if we can speed this up for writing strings, rather than single bytes.
 void serial_write(uint8_t data) {
+#ifndef USE_SERIAL_INTERRUPTS
+  while(!TXIF)
+    continue;
 
-//TODO
-/*
+  TXREG = data;
+#else
   // Calculate next head
   uint8_t next_head = serial_tx_buffer_head + 1;
   if (next_head == TX_BUFFER_SIZE) { next_head = 0; }
@@ -112,45 +128,38 @@ void serial_write(uint8_t data) {
   serial_tx_buffer_head = next_head;
   
   // Enable Data Register Empty Interrupt to make sure tx-streaming is running
-  UCSR0B |=  (1 << UDRIE0); 
-*/
+  PIE1bits.TXIE = 1;
+#endif
 }
 
-//TODO
-/*
 // Data Register Empty Interrupt handler
-ISR(SERIAL_UDRE)
+void serial_tx_interrupt()
 {
   uint8_t tail = serial_tx_buffer_tail; // Temporary serial_tx_buffer_tail (to optimize for volatile)
   
-  #ifdef ENABLE_XONXOFF
-    if (flow_ctrl == SEND_XOFF) { 
-      UDR0 = XOFF_CHAR; 
-      flow_ctrl = XOFF_SENT; 
-    } else if (flow_ctrl == SEND_XON) { 
-      UDR0 = XON_CHAR; 
-      flow_ctrl = XON_SENT; 
-    } else
-  #endif
-  { 
-    // Send a byte from the buffer	
-    UDR0 = serial_tx_buffer[tail];
-  
-    // Update tail position
-    tail++;
-    if (tail == TX_BUFFER_SIZE) { tail = 0; }
-  
-    serial_tx_buffer_tail = tail;
-  }
+  // Send a byte from the buffer	
+  TXREG = serial_tx_buffer[tail];
+
+  // Update tail position
+  tail++;
+  if (tail == TX_BUFFER_SIZE) { tail = 0; }
+
+  serial_tx_buffer_tail = tail;
   
   // Turn off Data Register Empty Interrupt to stop tx-streaming if this concludes the transfer
-  if (tail == serial_tx_buffer_head) { UCSR0B &= ~(1 << UDRIE0); }
+  if (tail == serial_tx_buffer_head) { PIE1bits.TXIE = 0; }
 }
-*/
 
 // Fetches the first byte in the serial read buffer. Called by main program.
 uint8_t serial_read()
 {
+#ifndef USE_SERIAL_INTERRUPTS
+  while(!RCIF)
+    continue;
+  RCIF=0;
+  return RCREG;
+#else
+
   uint8_t tail = serial_rx_buffer_tail; // Temporary serial_rx_buffer_tail (to optimize for volatile)
   if (serial_rx_buffer_head == tail) {
     return SERIAL_NO_DATA;
@@ -160,59 +169,29 @@ uint8_t serial_read()
     tail++;
     if (tail == RX_BUFFER_SIZE) { tail = 0; }
     serial_rx_buffer_tail = tail;
-
-    #ifdef ENABLE_XONXOFF
-      if ((serial_get_rx_buffer_count() < RX_BUFFER_LOW) && flow_ctrl == XOFF_SENT) { 
-        flow_ctrl = SEND_XON;
-        UCSR0B |=  (1 << UDRIE0); // Force TX
-      }
-    #endif
     
     return data;
   }
+#endif
 }
 
-//TODO
-/*
-ISR(SERIAL_RX)
+void serial_rx_interrupt()
 {
-  uint8_t data = UDR0;
+  uint8_t data = RCREG;
   uint8_t next_head;
   
-  // Pick off runtime command characters directly from the serial stream. These characters are
-  // not passed into the buffer, but these set system state flag bits for runtime execution.
-  switch (data) {
-    case CMD_STATUS_REPORT: bit_true_atomic(sys.execute, EXEC_STATUS_REPORT); break; // Set as true
-    case CMD_CYCLE_START:   bit_true_atomic(sys.execute, EXEC_CYCLE_START); break; // Set as true
-    case CMD_FEED_HOLD:     bit_true_atomic(sys.execute, EXEC_FEED_HOLD); break; // Set as true
-    case CMD_RESET:         mc_reset(); break; // Call motion control reset routine.
-    default: // Write character to buffer    
-      next_head = serial_rx_buffer_head + 1;
-      if (next_head == RX_BUFFER_SIZE) { next_head = 0; }
-    
-      // Write data to buffer unless it is full.
-      if (next_head != serial_rx_buffer_tail) {
-        serial_rx_buffer[serial_rx_buffer_head] = data;
-        serial_rx_buffer_head = next_head;    
-        
-        #ifdef ENABLE_XONXOFF
-          if ((serial_get_rx_buffer_count() >= RX_BUFFER_FULL) && flow_ctrl == XON_SENT) {
-            flow_ctrl = SEND_XOFF;
-            UCSR0B |=  (1 << UDRIE0); // Force TX
-          } 
-        #endif
-        
-      }
-      //TODO: else alarm on overflow?
+  next_head = serial_rx_buffer_head + 1;
+  if (next_head == RX_BUFFER_SIZE) { next_head = 0; }
+
+  // Write data to buffer unless it is full.
+  if (next_head != serial_rx_buffer_tail) {
+    serial_rx_buffer[serial_rx_buffer_head] = data;
+    serial_rx_buffer_head = next_head;        
   }
+  //TODO: else alarm on overflow?
 }
-*/
 
 void serial_reset_read_buffer() 
 {
   serial_rx_buffer_tail = serial_rx_buffer_head;
-
-  #ifdef ENABLE_XONXOFF
-    flow_ctrl = XON_SENT;
-  #endif
 }

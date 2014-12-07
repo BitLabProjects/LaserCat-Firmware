@@ -223,11 +223,11 @@ uint8_t settings_store_global_setting(uint8_t parameter, float value) {
       case 1: settings.stepper_idle_lock_time = int_value; break;
       case 2: 
         settings.step_invert_mask = int_value; 
-        st_generate_step_dir_invert_masks(); // Regenerate step and direction port invert masks.
+        //TODO st_generate_step_dir_invert_masks(); // Regenerate step and direction port invert masks.
         break;
       case 3: 
         settings.dir_invert_mask = int_value; 
-        st_generate_step_dir_invert_masks(); // Regenerate step and direction port invert masks.
+        //TODO st_generate_step_dir_invert_masks(); // Regenerate step and direction port invert masks.
         break;
       case 4: // Reset to ensure change. Immediate re-init may cause problems.
         if (int_value) { settings.flags |= BITFLAG_INVERT_ST_ENABLE; }

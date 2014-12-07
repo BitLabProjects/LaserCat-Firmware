@@ -27,9 +27,9 @@
 #include "system.h"
 #include "settings.h"
 #include "protocol.h"
-#include "planner.h"
+//#include "planner.h"
 #include "stepper.h"
-#include "motion_control.h"
+//#include "motion_control.h"
 #include "limits.h"
 #include "report.h"
 
@@ -92,7 +92,7 @@ void limits_disable()
     // limit setting if their limits are constantly triggering after a reset and move their axes.
     if (sys.state != STATE_ALARM) { 
       if (bit_isfalse(sys.execute,EXEC_ALARM)) {
-        mc_reset(); // Initiate system kill.
+        //TODO mc_reset(); // Initiate system kill.
         bit_true_atomic(sys.execute, (EXEC_ALARM | EXEC_CRIT_EVENT)); // Indicate hard limit critical event
       }
     }
@@ -148,7 +148,7 @@ void limits_go_home(uint8_t cycle_mask)
   }
   max_travel *= -HOMING_AXIS_SEARCH_SCALAR; // Ensure homing switches engaged by over-estimating max travel.
   
-  plan_reset(); // Reset planner buffer to zero planner current position and to clear previous motions.
+  //TODO plan_reset(); // Reset planner buffer to zero planner current position and to clear previous motions.
   
   do {
     // Initialize invert_pin boolean based on approach and invert pin user setting.
@@ -184,10 +184,10 @@ void limits_go_home(uint8_t cycle_mask)
     #ifdef USE_LINE_NUMBERS
       plan_buffer_line(target, homing_rate, false, HOMING_CYCLE_LINE_NUMBER); // Bypass mc_line(). Directly plan homing motion.
     #else
-      plan_buffer_line(target, homing_rate, false); // Bypass mc_line(). Directly plan homing motion.
+      //TODO plan_buffer_line(target, homing_rate, false); // Bypass mc_line(). Directly plan homing motion.
     #endif
     
-    st_prep_buffer(); // Prep and fill segment buffer from newly planned block.
+    //TODO st_prep_buffer(); // Prep and fill segment buffer from newly planned block.
     st_wake_up(); // Initiate motion
     do {
       // Check limit state. Lock out cycle axes when they change.
@@ -199,13 +199,13 @@ void limits_go_home(uint8_t cycle_mask)
         }
       }
       sys.homing_axis_lock = axislock;
-      st_prep_buffer(); // Check and prep segment buffer. NOTE: Should take no longer than 200us.
+      //TODO st_prep_buffer(); // Check and prep segment buffer. NOTE: Should take no longer than 200us.
       // Check only for user reset. No time to run protocol_execute_runtime() in this loop.
       if (sys.execute & EXEC_RESET) { protocol_execute_runtime(); return; }
     } while (STEP_MASK & axislock);
     
     st_reset(); // Immediately force kill steppers and reset step segment buffer.
-    plan_reset(); // Reset planner buffer. Zero planner positions. Ensure homing motion is cleared.
+    //TODO plan_reset(); // Reset planner buffer. Zero planner positions. Ensure homing motion is cleared.
 
     delay_ms(settings.homing_debounce_delay); // Delay to allow transient dynamics to dissipate.
 
@@ -247,12 +247,12 @@ void limits_go_home(uint8_t cycle_mask)
       target[idx] = (float)sys.position[idx]/settings.steps_per_mm[idx];
     }
   }
-  plan_sync_position(); // Sync planner position to current machine position for pull-off move.
+  //TODO plan_sync_position(); // Sync planner position to current machine position for pull-off move.
   
   #ifdef USE_LINE_NUMBERS
     plan_buffer_line(target, settings.homing_seek_rate, false, HOMING_CYCLE_LINE_NUMBER); // Bypass mc_line(). Directly plan motion.
   #else
-    plan_buffer_line(target, settings.homing_seek_rate, false); // Bypass mc_line(). Directly plan motion.
+   //TODO  plan_buffer_line(target, settings.homing_seek_rate, false); // Bypass mc_line(). Directly plan motion.
   #endif
   
   // Initiate pull-off using main motion control routines. 
@@ -300,7 +300,7 @@ void limits_soft_check(float *target)
         } while ( sys.state != STATE_IDLE || sys.state != STATE_QUEUED);
       }
     
-      mc_reset(); // Issue system reset and ensure spindle and coolant are shutdown.
+     //TODO  mc_reset(); // Issue system reset and ensure spindle and coolant are shutdown.
       bit_true_atomic(sys.execute, (EXEC_ALARM | EXEC_CRIT_EVENT)); // Indicate soft limit critical event
       protocol_execute_runtime(); // Execute to enter critical event loop and system abort
       return;

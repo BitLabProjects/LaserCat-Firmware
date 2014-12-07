@@ -21,7 +21,7 @@
 #include "system.h"
 #include "coolant_control.h"
 #include "protocol.h"
-#include "gcode.h"
+//#include "gcode.h"
 
 
 void coolant_init()
@@ -45,12 +45,13 @@ void coolant_stop()
 
 void coolant_run(uint8_t mode)
 {
+/*
   if (sys.state == STATE_CHECK_MODE) { return; }
 
   protocol_auto_cycle_start();   //temp fix for M8 lockup
   protocol_buffer_synchronize(); // Ensure coolant turns on when specified in program.
-  if (mode == COOLANT_FLOOD_ENABLE) {
-    COOLANT_FLOOD_PORT |= (1 << COOLANT_FLOOD_BIT);
+   if (mode == COOLANT_FLOOD_ENABLE) {
+     COOLANT_FLOOD_PORT |= (1 << COOLANT_FLOOD_BIT);
 
   #ifdef ENABLE_M7  
     } else if (mode == COOLANT_MIST_ENABLE) {
@@ -60,4 +61,5 @@ void coolant_run(uint8_t mode)
   } else {
     coolant_stop();
   }
+*/
 }

@@ -26,7 +26,7 @@
 */ 
 
 #include "system.h"
-#include "planner.h"
+//#include "planner.h"
 #include "protocol.h"
 #include "stepper.h"
 #include "settings.h"
@@ -147,6 +147,8 @@ static void planner_recalculate()
   // block in buffer. Cease planning when the last optimal planned or tail pointer is reached.
   // NOTE: Forward pass will later refine and correct the reverse pass to create an optimal plan.
   float entry_speed_sqr;
+  float current_entry_speed_sqr;
+  float current_max_entry_speed_sqr;
   plan_block_t *next;
   plan_block_t *current = &block_buffer[block_index];
 
@@ -161,20 +163,25 @@ static void planner_recalculate()
     while (block_index != block_buffer_planned) { 
       next = current;
       current = &block_buffer[block_index];
+      //SB OTT utilizza una locale per tenere current->entry_speed_sqr e riassegnala alla fine del ciclo
+      current_entry_speed_sqr = current->entry_speed_sqr;
+      current_max_entry_speed_sqr = current->max_entry_speed_sqr;
+      
       block_index = plan_prev_block_index(block_index);
 
       // Check if next block is the tail block(=planned block). If so, update current stepper parameters.
       if (block_index == block_buffer_tail) { st_update_plan_block_parameters(); } 
 
       // Compute maximum entry speed decelerating over the current block from its exit speed.
-      if (current->entry_speed_sqr != current->max_entry_speed_sqr) {
+      if (current_entry_speed_sqr != current_max_entry_speed_sqr) {
         entry_speed_sqr = next->entry_speed_sqr + 2*current->acceleration*current->millimeters;
-        if (entry_speed_sqr < current->max_entry_speed_sqr) {
-          current->entry_speed_sqr = entry_speed_sqr;
+        if (entry_speed_sqr < current_max_entry_speed_sqr) {
+          current_entry_speed_sqr = entry_speed_sqr;
         } else {
-          current->entry_speed_sqr = current->max_entry_speed_sqr;
+          current_entry_speed_sqr = current_max_entry_speed_sqr;
         }
       }
+      current->entry_speed_sqr = current_entry_speed_sqr;
     }
   }    
 
@@ -185,6 +192,9 @@ static void planner_recalculate()
   while (block_index != block_buffer_head) {
     current = next;
     next = &block_buffer[block_index];
+    //SB OTT come sopra
+    //float next_entry_speed_sqr = next->entry_speed_sqr;
+    //float current_entry_speed_sqr = current->entry_speed_sqr;
     
     // Any acceleration detected in the forward pass automatically moves the optimal planned
     // pointer forward, since everything before this is all optimal. In other words, nothing
@@ -197,6 +207,7 @@ static void planner_recalculate()
         block_buffer_planned = block_index; // Set optimal plan pointer.
       }
     }
+    //next->entry_speed_sqr = next_entry_speed_sqr;
     
     // Any block set at its maximum entry speed also creates an optimal plan up to this
     // point in the buffer. When the plan is bracketed by either the beginning of the

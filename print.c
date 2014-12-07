@@ -35,9 +35,9 @@ void printString(const char *s)
     serial_write(*s++);
 }
 
-//TODO
 int pgm_read_byte_near(const char *s) {
-  return 0;
+  //Si arrangia il compilatore a generare le istruzioni per eccedere alla memoria flash quando vede const char*
+  return s[0];
 }
 
 // Print a string stored in PGM-memory

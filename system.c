@@ -20,8 +20,8 @@
 
 #include "system.h"
 #include "settings.h"
-#include "gcode.h"
-#include "motion_control.h"
+//#include "gcode.h"
+//#include "motion_control.h"
 #include "report.h"
 #include "print.h"
 
@@ -69,7 +69,7 @@ void system_execute_startup(char *line)
     } else {
       if (line[0] != 0) {
         printString(line); // Echo startup line to indicate execution.
-        report_status_message(gc_execute_line(line));
+        //TODO report_status_message(gc_execute_line(line));
       }
     } 
   }  
@@ -106,7 +106,7 @@ uint8_t system_execute_line(char *line)
       // is idle and ready, regardless of alarm locks. This is mainly to keep things
       // simple and consistent.
       if ( sys.state == STATE_CHECK_MODE ) { 
-        mc_reset(); 
+        //TODO mc_reset(); 
         report_feedback_message(MESSAGE_DISABLED);
       } else {
         if (sys.state) { return(STATUS_IDLE_ERROR); } // Requires no alarm mode.
@@ -145,7 +145,7 @@ uint8_t system_execute_line(char *line)
         case 'H' : // Perform homing cycle [IDLE/ALARM]
           if (bit_istrue(settings.flags,BITFLAG_HOMING_ENABLE)) { 
             // Only perform homing if Grbl is idle or lost.
-            mc_homing_cycle(); 
+            //TODO mc_homing_cycle(); 
             if (!sys.abort) { system_execute_startup(line); } // Execute startup scripts after successful homing.
           } else { return(STATUS_SETTING_DISABLED); }
           break;
@@ -187,7 +187,7 @@ uint8_t system_execute_line(char *line)
               line[char_counter-helper_var] = line[char_counter];
             } while (line[char_counter++] != 0);
             // Execute gcode block to ensure block is valid.
-            helper_var = gc_execute_line(line); // Set helper_var to returned status code.
+            //TODO helper_var = gc_execute_line(line); // Set helper_var to returned status code.
             if (helper_var) { return(helper_var); }
             else { 
               helper_var = (uint8_t)trunc(parameter); // Set helper_var to int value of parameter

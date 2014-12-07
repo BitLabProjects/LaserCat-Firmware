@@ -135,6 +135,7 @@ void delay_ms(uint16_t ms)
 // efficiently with larger delays, as the counter adds parasitic time in each iteration.
 void delay_us(uint32_t us) 
 {
+  /* TODO
   while (us) {
     if (us < 10) { 
       _delay_us(1);
@@ -149,7 +150,7 @@ void delay_us(uint32_t us)
       _delay_ms(1);
       us -= 1000;
     }
-  }
+  }*/
 }
 
 

@@ -28,12 +28,12 @@
 #include "serial.h"
 #include "settings.h"
 #include "protocol.h"
-#include "gcode.h"
-#include "planner.h"
+//#include "gcode.h"
+//#include "planner.h"
 #include "stepper.h"
 #include "spindle_control.h"
 #include "coolant_control.h"
-#include "motion_control.h"
+//#include "motion_control.h"
 #include "limits.h"
 #include "probe.h"
 #include "report.h"
@@ -46,8 +46,15 @@ int main(void)
 {
   // Initialize system upon power-up.
   serial_init();   // Setup serial baud rate and interrupts
-  settings_init(); // Load grbl settings from EEPROM
-  stepper_init();  // Configure stepper pins and interrupt timers
+
+  /*while(true) {
+    serial_write('A');
+    serial_write('B');
+    serial_write('C');
+  }*/
+
+  //settings_init(); // Load grbl settings from EEPROM
+  //stepper_init();  // Configure stepper pins and interrupt timers
   system_init();   // Configure pinout pins and pin-change interrupt
   
   memset(&sys, 0, sizeof(sys));  // Clear all system variables
@@ -74,27 +81,34 @@ int main(void)
   
     // Reset Grbl primary systems.
     serial_reset_read_buffer(); // Clear serial read buffer
-    gc_init(); // Set g-code parser to default state
     //spindle_init();
     //coolant_init();
-    limits_init(); 
+    //limits_init(); 
     //probe_init();
-    plan_reset(); // Clear block buffer and planner variables
     st_reset(); // Clear stepper subsystem variables.
-
-    // Sync cleared gcode and planner positions to current system position.
-    plan_sync_position();
-    gc_sync_position();
 
     // Reset system variables.
     sys.abort = false;
     sys.execute = 0;
-    if (bit_istrue(settings.flags,BITFLAG_AUTO_START)) { sys.auto_start = true; }
-    else { sys.auto_start = false; }
           
     // Start Grbl main loop. Processes program inputs and executes them.
     protocol_main_loop();
     
   }
   //return 0;   /* Never reached */
+}
+
+void interrupt int_low() {
+  INTCONbits.GIE = 0;
+
+  if (PIR1bits.RCIF) {
+    serial_rx_interrupt();
+  }
+
+  //Test PIE1bits.TXIE because TXIF is always set even when interrupts for usart are disable
+  if (PIE1bits.TXIE && PIR1bits.TXIF) {
+    serial_tx_interrupt();
+  }
+
+  INTCONbits.GIE = 1;
 }

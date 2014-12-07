@@ -2,123 +2,6 @@
 MagicCookie={0b13fe8c-dfe0-40eb-8900-6712719559a7}
 Version=1.0
 [File000]
-Location=C:\Dati\bitLab\Progetti\LaserCat\grbl-pic\system.o
-Folder=Intermediary
-DeviceName=PIC18F4550
-LanguageToolSuiteID={5B7D72DD-9861-47BD-9F60-2BE967BF8416}
-LanguageToolID={E56A1C86-9D32-4DF6-8C34-FE0388B1B644}
-LanguageToolLocation=C:\Program Files (x86)\Microchip\xc8\v1.33\bin\mcc18.exe
-PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)||$(INCDIR)||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|system.c|main.c|motion_control.c|nuts_bolts.c|planner.c|print.c|protocol.c|settings.c|stepper.c||<obj>||<lib>||<lkr>||
-SuiteArgsString=
-ToolArgsString=-Ou- -Ot- -Ob- -Op- -Or- -Od- -Opa-
-TraceCmdString=
-DebugOptions=
-[File001]
-Location=C:\Dati\bitLab\Progetti\LaserCat\grbl-pic\main.o
-Folder=Intermediary
-DeviceName=PIC18F4550
-LanguageToolSuiteID={5B7D72DD-9861-47BD-9F60-2BE967BF8416}
-LanguageToolID={E56A1C86-9D32-4DF6-8C34-FE0388B1B644}
-LanguageToolLocation=C:\Program Files (x86)\Microchip\xc8\v1.33\bin\mcc18.exe
-PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)||$(INCDIR)||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|system.c|main.c|motion_control.c|nuts_bolts.c|planner.c|print.c|protocol.c|settings.c|stepper.c||<obj>||<lib>||<lkr>||
-SuiteArgsString=
-ToolArgsString=-Ou- -Ot- -Ob- -Op- -Or- -Od- -Opa-
-TraceCmdString=
-DebugOptions=
-[File002]
-Location=C:\Dati\bitLab\Progetti\LaserCat\grbl-pic\motion_control.o
-Folder=Intermediary
-DeviceName=PIC18F4550
-LanguageToolSuiteID={5B7D72DD-9861-47BD-9F60-2BE967BF8416}
-LanguageToolID={E56A1C86-9D32-4DF6-8C34-FE0388B1B644}
-LanguageToolLocation=C:\Program Files (x86)\Microchip\xc8\v1.33\bin\mcc18.exe
-PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)||$(INCDIR)||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|system.c|main.c|motion_control.c|nuts_bolts.c|planner.c|print.c|protocol.c|settings.c|stepper.c||<obj>||<lib>||<lkr>||
-SuiteArgsString=
-ToolArgsString=-Ou- -Ot- -Ob- -Op- -Or- -Od- -Opa-
-TraceCmdString=
-DebugOptions=
-[File003]
-Location=C:\Dati\bitLab\Progetti\LaserCat\grbl-pic\nuts_bolts.o
-Folder=Intermediary
-DeviceName=PIC18F4550
-LanguageToolSuiteID={5B7D72DD-9861-47BD-9F60-2BE967BF8416}
-LanguageToolID={E56A1C86-9D32-4DF6-8C34-FE0388B1B644}
-LanguageToolLocation=C:\Program Files (x86)\Microchip\xc8\v1.33\bin\mcc18.exe
-PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)||$(INCDIR)||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|system.c|main.c|motion_control.c|nuts_bolts.c|planner.c|print.c|protocol.c|settings.c|stepper.c||<obj>||<lib>||<lkr>||
-SuiteArgsString=
-ToolArgsString=-Ou- -Ot- -Ob- -Op- -Or- -Od- -Opa-
-TraceCmdString=
-DebugOptions=
-[File004]
-Location=C:\Dati\bitLab\Progetti\LaserCat\grbl-pic\planner.o
-Folder=Intermediary
-DeviceName=PIC18F4550
-LanguageToolSuiteID={5B7D72DD-9861-47BD-9F60-2BE967BF8416}
-LanguageToolID={E56A1C86-9D32-4DF6-8C34-FE0388B1B644}
-LanguageToolLocation=C:\Program Files (x86)\Microchip\xc8\v1.33\bin\mcc18.exe
-PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)||$(INCDIR)||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|system.c|main.c|motion_control.c|nuts_bolts.c|planner.c|print.c|protocol.c|settings.c|stepper.c||<obj>||<lib>||<lkr>||
-SuiteArgsString=
-ToolArgsString=-Ou- -Ot- -Ob- -Op- -Or- -Od- -Opa-
-TraceCmdString=
-DebugOptions=
-[File005]
-Location=C:\Dati\bitLab\Progetti\LaserCat\grbl-pic\print.o
-Folder=Intermediary
-DeviceName=PIC18F4550
-LanguageToolSuiteID={5B7D72DD-9861-47BD-9F60-2BE967BF8416}
-LanguageToolID={E56A1C86-9D32-4DF6-8C34-FE0388B1B644}
-LanguageToolLocation=C:\Program Files (x86)\Microchip\xc8\v1.33\bin\mcc18.exe
-PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)||$(INCDIR)||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|system.c|main.c|motion_control.c|nuts_bolts.c|planner.c|print.c|protocol.c|settings.c|stepper.c||<obj>||<lib>||<lkr>||
-SuiteArgsString=
-ToolArgsString=-Ou- -Ot- -Ob- -Op- -Or- -Od- -Opa-
-TraceCmdString=
-DebugOptions=
-[File006]
-Location=C:\Dati\bitLab\Progetti\LaserCat\grbl-pic\protocol.o
-Folder=Intermediary
-DeviceName=PIC18F4550
-LanguageToolSuiteID={5B7D72DD-9861-47BD-9F60-2BE967BF8416}
-LanguageToolID={E56A1C86-9D32-4DF6-8C34-FE0388B1B644}
-LanguageToolLocation=C:\Program Files (x86)\Microchip\xc8\v1.33\bin\mcc18.exe
-PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)||$(INCDIR)||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|system.c|main.c|motion_control.c|nuts_bolts.c|planner.c|print.c|protocol.c|settings.c|stepper.c||<obj>||<lib>||<lkr>||
-SuiteArgsString=
-ToolArgsString=-Ou- -Ot- -Ob- -Op- -Or- -Od- -Opa-
-TraceCmdString=
-DebugOptions=
-[File007]
-Location=C:\Dati\bitLab\Progetti\LaserCat\grbl-pic\settings.o
-Folder=Intermediary
-DeviceName=PIC18F4550
-LanguageToolSuiteID={5B7D72DD-9861-47BD-9F60-2BE967BF8416}
-LanguageToolID={E56A1C86-9D32-4DF6-8C34-FE0388B1B644}
-LanguageToolLocation=C:\Program Files (x86)\Microchip\xc8\v1.33\bin\mcc18.exe
-PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)||$(INCDIR)||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|system.c|main.c|motion_control.c|nuts_bolts.c|planner.c|print.c|protocol.c|settings.c|stepper.c||<obj>||<lib>||<lkr>||
-SuiteArgsString=
-ToolArgsString=-Ou- -Ot- -Ob- -Op- -Or- -Od- -Opa-
-TraceCmdString=
-DebugOptions=
-[File008]
-Location=C:\Dati\bitLab\Progetti\LaserCat\grbl-pic\stepper.o
-Folder=Intermediary
-DeviceName=PIC18F4550
-LanguageToolSuiteID={5B7D72DD-9861-47BD-9F60-2BE967BF8416}
-LanguageToolID={E56A1C86-9D32-4DF6-8C34-FE0388B1B644}
-LanguageToolLocation=C:\Program Files (x86)\Microchip\xc8\v1.33\bin\mcc18.exe
-PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)||$(INCDIR)||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|system.c|main.c|motion_control.c|nuts_bolts.c|planner.c|print.c|protocol.c|settings.c|stepper.c||<obj>||<lib>||<lkr>||
-SuiteArgsString=
-ToolArgsString=-Ou- -Ot- -Ob- -Op- -Or- -Od- -Opa-
-TraceCmdString=
-DebugOptions=
-[File009]
 Location=C:\Dati\bitLab\Progetti\LaserCat\grbl-pic\system.p1
 Folder=Intermediary
 DeviceName=PIC18F4550
@@ -126,12 +9,12 @@ LanguageToolSuiteID={38171385-97B2-4EC5-BF2C-C2C027BA5B04}
 LanguageToolID={B6D1F1C2-3E8A-49F6-9C0A-75F5EBE32222}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\xc8\v1.33\bin\xc8.exe
 PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)||$(INCDIR)||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|system.c|main.c|motion_control.c|nuts_bolts.c|planner.c|print.c|protocol.c|settings.c|stepper.c||<obj>||<lib>||<lkr>||
+SOLK=<src>|system.c|main.c|nuts_bolts.c|print.c|protocol.c|settings.c|stepper.c|coolant_control.c|eeprom.c|limits.c|probe.c|report.c|serial.c|spindle_control.c||<obj>||<lib>||<lkr>||
 SuiteArgsString=
-ToolArgsString= C9=2,1
+ToolArgsString=C9=2,1
 TraceCmdString=
 DebugOptions=
-[File010]
+[File001]
 Location=C:\Dati\bitLab\Progetti\LaserCat\grbl-pic\main.p1
 Folder=Intermediary
 DeviceName=PIC18F4550
@@ -139,25 +22,12 @@ LanguageToolSuiteID={38171385-97B2-4EC5-BF2C-C2C027BA5B04}
 LanguageToolID={B6D1F1C2-3E8A-49F6-9C0A-75F5EBE32222}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\xc8\v1.33\bin\xc8.exe
 PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)||$(INCDIR)||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|system.c|main.c|motion_control.c|nuts_bolts.c|planner.c|print.c|protocol.c|settings.c|stepper.c||<obj>||<lib>||<lkr>||
+SOLK=<src>|system.c|main.c|nuts_bolts.c|print.c|protocol.c|settings.c|stepper.c|coolant_control.c|eeprom.c|limits.c|probe.c|report.c|serial.c|spindle_control.c||<obj>||<lib>||<lkr>||
 SuiteArgsString=
-ToolArgsString= C9=2,1
+ToolArgsString=C9=2,1
 TraceCmdString=
 DebugOptions=
-[File011]
-Location=C:\Dati\bitLab\Progetti\LaserCat\grbl-pic\motion_control.p1
-Folder=Intermediary
-DeviceName=PIC18F4550
-LanguageToolSuiteID={38171385-97B2-4EC5-BF2C-C2C027BA5B04}
-LanguageToolID={B6D1F1C2-3E8A-49F6-9C0A-75F5EBE32222}
-LanguageToolLocation=C:\Program Files (x86)\Microchip\xc8\v1.33\bin\xc8.exe
-PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)||$(INCDIR)||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|system.c|main.c|motion_control.c|nuts_bolts.c|planner.c|print.c|protocol.c|settings.c|stepper.c||<obj>||<lib>||<lkr>||
-SuiteArgsString=
-ToolArgsString= C9=2,1
-TraceCmdString=
-DebugOptions=
-[File012]
+[File002]
 Location=C:\Dati\bitLab\Progetti\LaserCat\grbl-pic\nuts_bolts.p1
 Folder=Intermediary
 DeviceName=PIC18F4550
@@ -165,25 +35,12 @@ LanguageToolSuiteID={38171385-97B2-4EC5-BF2C-C2C027BA5B04}
 LanguageToolID={B6D1F1C2-3E8A-49F6-9C0A-75F5EBE32222}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\xc8\v1.33\bin\xc8.exe
 PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)||$(INCDIR)||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|system.c|main.c|motion_control.c|nuts_bolts.c|planner.c|print.c|protocol.c|settings.c|stepper.c||<obj>||<lib>||<lkr>||
+SOLK=<src>|system.c|main.c|nuts_bolts.c|print.c|protocol.c|settings.c|stepper.c|coolant_control.c|eeprom.c|limits.c|probe.c|report.c|serial.c|spindle_control.c||<obj>||<lib>||<lkr>||
 SuiteArgsString=
-ToolArgsString= C9=2,1
+ToolArgsString=C9=2,1
 TraceCmdString=
 DebugOptions=
-[File013]
-Location=C:\Dati\bitLab\Progetti\LaserCat\grbl-pic\planner.p1
-Folder=Intermediary
-DeviceName=PIC18F4550
-LanguageToolSuiteID={38171385-97B2-4EC5-BF2C-C2C027BA5B04}
-LanguageToolID={B6D1F1C2-3E8A-49F6-9C0A-75F5EBE32222}
-LanguageToolLocation=C:\Program Files (x86)\Microchip\xc8\v1.33\bin\xc8.exe
-PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)||$(INCDIR)||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|system.c|main.c|motion_control.c|nuts_bolts.c|planner.c|print.c|protocol.c|settings.c|stepper.c||<obj>||<lib>||<lkr>||
-SuiteArgsString=
-ToolArgsString= C9=2,1
-TraceCmdString=
-DebugOptions=
-[File014]
+[File003]
 Location=C:\Dati\bitLab\Progetti\LaserCat\grbl-pic\print.p1
 Folder=Intermediary
 DeviceName=PIC18F4550
@@ -191,12 +48,12 @@ LanguageToolSuiteID={38171385-97B2-4EC5-BF2C-C2C027BA5B04}
 LanguageToolID={B6D1F1C2-3E8A-49F6-9C0A-75F5EBE32222}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\xc8\v1.33\bin\xc8.exe
 PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)||$(INCDIR)||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|system.c|main.c|motion_control.c|nuts_bolts.c|planner.c|print.c|protocol.c|settings.c|stepper.c||<obj>||<lib>||<lkr>||
+SOLK=<src>|system.c|main.c|nuts_bolts.c|print.c|protocol.c|settings.c|stepper.c|coolant_control.c|eeprom.c|limits.c|probe.c|report.c|serial.c|spindle_control.c||<obj>||<lib>||<lkr>||
 SuiteArgsString=
-ToolArgsString= C9=2,1
+ToolArgsString=C9=2,1
 TraceCmdString=
 DebugOptions=
-[File015]
+[File004]
 Location=C:\Dati\bitLab\Progetti\LaserCat\grbl-pic\protocol.p1
 Folder=Intermediary
 DeviceName=PIC18F4550
@@ -204,12 +61,12 @@ LanguageToolSuiteID={38171385-97B2-4EC5-BF2C-C2C027BA5B04}
 LanguageToolID={B6D1F1C2-3E8A-49F6-9C0A-75F5EBE32222}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\xc8\v1.33\bin\xc8.exe
 PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)||$(INCDIR)||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|system.c|main.c|motion_control.c|nuts_bolts.c|planner.c|print.c|protocol.c|settings.c|stepper.c||<obj>||<lib>||<lkr>||
+SOLK=<src>|system.c|main.c|nuts_bolts.c|print.c|protocol.c|settings.c|stepper.c|coolant_control.c|eeprom.c|limits.c|probe.c|report.c|serial.c|spindle_control.c||<obj>||<lib>||<lkr>||
 SuiteArgsString=
-ToolArgsString= C9=2,1
+ToolArgsString=C9=2,1
 TraceCmdString=
 DebugOptions=
-[File016]
+[File005]
 Location=C:\Dati\bitLab\Progetti\LaserCat\grbl-pic\settings.p1
 Folder=Intermediary
 DeviceName=PIC18F4550
@@ -217,12 +74,12 @@ LanguageToolSuiteID={38171385-97B2-4EC5-BF2C-C2C027BA5B04}
 LanguageToolID={B6D1F1C2-3E8A-49F6-9C0A-75F5EBE32222}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\xc8\v1.33\bin\xc8.exe
 PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)||$(INCDIR)||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|system.c|main.c|motion_control.c|nuts_bolts.c|planner.c|print.c|protocol.c|settings.c|stepper.c||<obj>||<lib>||<lkr>||
+SOLK=<src>|system.c|main.c|nuts_bolts.c|print.c|protocol.c|settings.c|stepper.c|coolant_control.c|eeprom.c|limits.c|probe.c|report.c|serial.c|spindle_control.c||<obj>||<lib>||<lkr>||
 SuiteArgsString=
-ToolArgsString= C9=2,1
+ToolArgsString=C9=2,1
 TraceCmdString=
 DebugOptions=
-[File017]
+[File006]
 Location=C:\Dati\bitLab\Progetti\LaserCat\grbl-pic\stepper.p1
 Folder=Intermediary
 DeviceName=PIC18F4550
@@ -230,12 +87,103 @@ LanguageToolSuiteID={38171385-97B2-4EC5-BF2C-C2C027BA5B04}
 LanguageToolID={B6D1F1C2-3E8A-49F6-9C0A-75F5EBE32222}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\xc8\v1.33\bin\xc8.exe
 PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)||$(INCDIR)||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|system.c|main.c|motion_control.c|nuts_bolts.c|planner.c|print.c|protocol.c|settings.c|stepper.c||<obj>||<lib>||<lkr>||
+SOLK=<src>|system.c|main.c|nuts_bolts.c|print.c|protocol.c|settings.c|stepper.c|coolant_control.c|eeprom.c|limits.c|probe.c|report.c|serial.c|spindle_control.c||<obj>||<lib>||<lkr>||
 SuiteArgsString=
-ToolArgsString= C9=2,1
+ToolArgsString=C9=2,1
 TraceCmdString=
 DebugOptions=
-[File018]
+[File007]
+Location=C:\Dati\bitLab\Progetti\LaserCat\grbl-pic\coolant_control.p1
+Folder=Intermediary
+DeviceName=PIC18F4550
+LanguageToolSuiteID={38171385-97B2-4EC5-BF2C-C2C027BA5B04}
+LanguageToolID={B6D1F1C2-3E8A-49F6-9C0A-75F5EBE32222}
+LanguageToolLocation=C:\Program Files (x86)\Microchip\xc8\v1.33\bin\xc8.exe
+PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)||$(INCDIR)||$(LIBDIR)||$(LKRDIR)||
+SOLK=<src>|system.c|main.c|nuts_bolts.c|print.c|protocol.c|settings.c|stepper.c|coolant_control.c|eeprom.c|limits.c|probe.c|report.c|serial.c|spindle_control.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=C9=2,1
+TraceCmdString=
+DebugOptions=
+[File008]
+Location=C:\Dati\bitLab\Progetti\LaserCat\grbl-pic\eeprom.p1
+Folder=Intermediary
+DeviceName=PIC18F4550
+LanguageToolSuiteID={38171385-97B2-4EC5-BF2C-C2C027BA5B04}
+LanguageToolID={B6D1F1C2-3E8A-49F6-9C0A-75F5EBE32222}
+LanguageToolLocation=C:\Program Files (x86)\Microchip\xc8\v1.33\bin\xc8.exe
+PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)||$(INCDIR)||$(LIBDIR)||$(LKRDIR)||
+SOLK=<src>|system.c|main.c|nuts_bolts.c|print.c|protocol.c|settings.c|stepper.c|coolant_control.c|eeprom.c|limits.c|probe.c|report.c|serial.c|spindle_control.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=C9=2,1
+TraceCmdString=
+DebugOptions=
+[File009]
+Location=C:\Dati\bitLab\Progetti\LaserCat\grbl-pic\limits.p1
+Folder=Intermediary
+DeviceName=PIC18F4550
+LanguageToolSuiteID={38171385-97B2-4EC5-BF2C-C2C027BA5B04}
+LanguageToolID={B6D1F1C2-3E8A-49F6-9C0A-75F5EBE32222}
+LanguageToolLocation=C:\Program Files (x86)\Microchip\xc8\v1.33\bin\xc8.exe
+PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)||$(INCDIR)||$(LIBDIR)||$(LKRDIR)||
+SOLK=<src>|system.c|main.c|nuts_bolts.c|print.c|protocol.c|settings.c|stepper.c|coolant_control.c|eeprom.c|limits.c|probe.c|report.c|serial.c|spindle_control.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=C9=2,1
+TraceCmdString=
+DebugOptions=
+[File010]
+Location=C:\Dati\bitLab\Progetti\LaserCat\grbl-pic\probe.p1
+Folder=Intermediary
+DeviceName=PIC18F4550
+LanguageToolSuiteID={38171385-97B2-4EC5-BF2C-C2C027BA5B04}
+LanguageToolID={B6D1F1C2-3E8A-49F6-9C0A-75F5EBE32222}
+LanguageToolLocation=C:\Program Files (x86)\Microchip\xc8\v1.33\bin\xc8.exe
+PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)||$(INCDIR)||$(LIBDIR)||$(LKRDIR)||
+SOLK=<src>|system.c|main.c|nuts_bolts.c|print.c|protocol.c|settings.c|stepper.c|coolant_control.c|eeprom.c|limits.c|probe.c|report.c|serial.c|spindle_control.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=C9=2,1
+TraceCmdString=
+DebugOptions=
+[File011]
+Location=C:\Dati\bitLab\Progetti\LaserCat\grbl-pic\report.p1
+Folder=Intermediary
+DeviceName=PIC18F4550
+LanguageToolSuiteID={38171385-97B2-4EC5-BF2C-C2C027BA5B04}
+LanguageToolID={B6D1F1C2-3E8A-49F6-9C0A-75F5EBE32222}
+LanguageToolLocation=C:\Program Files (x86)\Microchip\xc8\v1.33\bin\xc8.exe
+PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)||$(INCDIR)||$(LIBDIR)||$(LKRDIR)||
+SOLK=<src>|system.c|main.c|nuts_bolts.c|print.c|protocol.c|settings.c|stepper.c|coolant_control.c|eeprom.c|limits.c|probe.c|report.c|serial.c|spindle_control.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=C9=2,1
+TraceCmdString=
+DebugOptions=
+[File012]
+Location=C:\Dati\bitLab\Progetti\LaserCat\grbl-pic\serial.p1
+Folder=Intermediary
+DeviceName=PIC18F4550
+LanguageToolSuiteID={38171385-97B2-4EC5-BF2C-C2C027BA5B04}
+LanguageToolID={B6D1F1C2-3E8A-49F6-9C0A-75F5EBE32222}
+LanguageToolLocation=C:\Program Files (x86)\Microchip\xc8\v1.33\bin\xc8.exe
+PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)||$(INCDIR)||$(LIBDIR)||$(LKRDIR)||
+SOLK=<src>|system.c|main.c|nuts_bolts.c|print.c|protocol.c|settings.c|stepper.c|coolant_control.c|eeprom.c|limits.c|probe.c|report.c|serial.c|spindle_control.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=C9=2,1
+TraceCmdString=
+DebugOptions=
+[File013]
+Location=C:\Dati\bitLab\Progetti\LaserCat\grbl-pic\spindle_control.p1
+Folder=Intermediary
+DeviceName=PIC18F4550
+LanguageToolSuiteID={38171385-97B2-4EC5-BF2C-C2C027BA5B04}
+LanguageToolID={B6D1F1C2-3E8A-49F6-9C0A-75F5EBE32222}
+LanguageToolLocation=C:\Program Files (x86)\Microchip\xc8\v1.33\bin\xc8.exe
+PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)||$(INCDIR)||$(LIBDIR)||$(LKRDIR)||
+SOLK=<src>|system.c|main.c|nuts_bolts.c|print.c|protocol.c|settings.c|stepper.c|coolant_control.c|eeprom.c|limits.c|probe.c|report.c|serial.c|spindle_control.c||<obj>||<lib>||<lkr>||
+SuiteArgsString=
+ToolArgsString=C9=2,1
+TraceCmdString=
+DebugOptions=
+[File014]
 Location=C:\Dati\bitLab\Progetti\LaserCat\grbl-pic\grbl-pic.cof
 Folder=Output
 DeviceName=PIC18F4550
@@ -243,12 +191,12 @@ LanguageToolSuiteID={38171385-97B2-4EC5-BF2C-C2C027BA5B04}
 LanguageToolID={B6D1F1C2-3E8A-49F6-9C0A-75F5EBE32222}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\xc8\v1.33\bin\xc8.exe
 PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)||$(INCDIR)||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|system.c|main.c|motion_control.c|nuts_bolts.c|planner.c|print.c|protocol.c|settings.c|stepper.c||<obj>||<lib>||<lkr>||
+SOLK=<src>|system.c|main.c|nuts_bolts.c|print.c|protocol.c|settings.c|stepper.c|coolant_control.c|eeprom.c|limits.c|probe.c|report.c|serial.c|spindle_control.c||<obj>||<lib>||<lkr>||
 SuiteArgsString=
-ToolArgsString= C9=2,1
+ToolArgsString=C9=2,1
 TraceCmdString=
 DebugOptions=
-[File019]
+[File015]
 Location=C:\Dati\bitLab\Progetti\LaserCat\grbl-pic\grbl-pic.hex
 Folder=Output
 DeviceName=PIC18F4550
@@ -256,12 +204,12 @@ LanguageToolSuiteID={38171385-97B2-4EC5-BF2C-C2C027BA5B04}
 LanguageToolID={B6D1F1C2-3E8A-49F6-9C0A-75F5EBE32222}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\xc8\v1.33\bin\xc8.exe
 PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)||$(INCDIR)||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|system.c|main.c|motion_control.c|nuts_bolts.c|planner.c|print.c|protocol.c|settings.c|stepper.c||<obj>||<lib>||<lkr>||
+SOLK=<src>|system.c|main.c|nuts_bolts.c|print.c|protocol.c|settings.c|stepper.c|coolant_control.c|eeprom.c|limits.c|probe.c|report.c|serial.c|spindle_control.c||<obj>||<lib>||<lkr>||
 SuiteArgsString=
-ToolArgsString= C9=2,1
+ToolArgsString=C9=2,1
 TraceCmdString=
 DebugOptions=
-[File020]
+[File016]
 Location=C:\Dati\bitLab\Progetti\LaserCat\grbl-pic\grbl-pic.sym
 Folder=Output
 DeviceName=PIC18F4550
@@ -269,12 +217,12 @@ LanguageToolSuiteID={38171385-97B2-4EC5-BF2C-C2C027BA5B04}
 LanguageToolID={B6D1F1C2-3E8A-49F6-9C0A-75F5EBE32222}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\xc8\v1.33\bin\xc8.exe
 PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)||$(INCDIR)||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|system.c|main.c|motion_control.c|nuts_bolts.c|planner.c|print.c|protocol.c|settings.c|stepper.c||<obj>||<lib>||<lkr>||
+SOLK=<src>|system.c|main.c|nuts_bolts.c|print.c|protocol.c|settings.c|stepper.c|coolant_control.c|eeprom.c|limits.c|probe.c|report.c|serial.c|spindle_control.c||<obj>||<lib>||<lkr>||
 SuiteArgsString=
-ToolArgsString= C9=2,1
+ToolArgsString=C9=2,1
 TraceCmdString=
 DebugOptions=
-[File021]
+[File017]
 Location=C:\Dati\bitLab\Progetti\LaserCat\grbl-pic\grbl-pic.map
 Folder=Output
 DeviceName=PIC18F4550
@@ -282,12 +230,12 @@ LanguageToolSuiteID={38171385-97B2-4EC5-BF2C-C2C027BA5B04}
 LanguageToolID={B6D1F1C2-3E8A-49F6-9C0A-75F5EBE32222}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\xc8\v1.33\bin\xc8.exe
 PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)||$(INCDIR)||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|system.c|main.c|motion_control.c|nuts_bolts.c|planner.c|print.c|protocol.c|settings.c|stepper.c||<obj>||<lib>||<lkr>||
+SOLK=<src>|system.c|main.c|nuts_bolts.c|print.c|protocol.c|settings.c|stepper.c|coolant_control.c|eeprom.c|limits.c|probe.c|report.c|serial.c|spindle_control.c||<obj>||<lib>||<lkr>||
 SuiteArgsString=
-ToolArgsString= C9=2,1
+ToolArgsString=C9=2,1
 TraceCmdString=
 DebugOptions=
-[File022]
+[File018]
 Location=C:\Dati\bitLab\Progetti\LaserCat\grbl-pic\grbl-pic.hxl
 Folder=Output
 DeviceName=PIC18F4550
@@ -295,12 +243,12 @@ LanguageToolSuiteID={38171385-97B2-4EC5-BF2C-C2C027BA5B04}
 LanguageToolID={B6D1F1C2-3E8A-49F6-9C0A-75F5EBE32222}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\xc8\v1.33\bin\xc8.exe
 PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)||$(INCDIR)||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|system.c|main.c|motion_control.c|nuts_bolts.c|planner.c|print.c|protocol.c|settings.c|stepper.c||<obj>||<lib>||<lkr>||
+SOLK=<src>|system.c|main.c|nuts_bolts.c|print.c|protocol.c|settings.c|stepper.c|coolant_control.c|eeprom.c|limits.c|probe.c|report.c|serial.c|spindle_control.c||<obj>||<lib>||<lkr>||
 SuiteArgsString=
-ToolArgsString= C9=2,1
+ToolArgsString=C9=2,1
 TraceCmdString=
 DebugOptions=
-[File023]
+[File019]
 Location=C:\Dati\bitLab\Progetti\LaserCat\grbl-pic\startup.lst
 Folder=Output
 DeviceName=PIC18F4550
@@ -308,12 +256,12 @@ LanguageToolSuiteID={38171385-97B2-4EC5-BF2C-C2C027BA5B04}
 LanguageToolID={B6D1F1C2-3E8A-49F6-9C0A-75F5EBE32222}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\xc8\v1.33\bin\xc8.exe
 PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)||$(INCDIR)||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|system.c|main.c|motion_control.c|nuts_bolts.c|planner.c|print.c|protocol.c|settings.c|stepper.c||<obj>||<lib>||<lkr>||
+SOLK=<src>|system.c|main.c|nuts_bolts.c|print.c|protocol.c|settings.c|stepper.c|coolant_control.c|eeprom.c|limits.c|probe.c|report.c|serial.c|spindle_control.c||<obj>||<lib>||<lkr>||
 SuiteArgsString=
-ToolArgsString= C9=2,1
+ToolArgsString=C9=2,1
 TraceCmdString=
 DebugOptions=
-[File024]
+[File020]
 Location=C:\Dati\bitLab\Progetti\LaserCat\grbl-pic\startup.rlf
 Folder=Output
 DeviceName=PIC18F4550
@@ -321,12 +269,12 @@ LanguageToolSuiteID={38171385-97B2-4EC5-BF2C-C2C027BA5B04}
 LanguageToolID={B6D1F1C2-3E8A-49F6-9C0A-75F5EBE32222}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\xc8\v1.33\bin\xc8.exe
 PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)||$(INCDIR)||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|system.c|main.c|motion_control.c|nuts_bolts.c|planner.c|print.c|protocol.c|settings.c|stepper.c||<obj>||<lib>||<lkr>||
+SOLK=<src>|system.c|main.c|nuts_bolts.c|print.c|protocol.c|settings.c|stepper.c|coolant_control.c|eeprom.c|limits.c|probe.c|report.c|serial.c|spindle_control.c||<obj>||<lib>||<lkr>||
 SuiteArgsString=
-ToolArgsString= C9=2,1
+ToolArgsString=C9=2,1
 TraceCmdString=
 DebugOptions=
-[File025]
+[File021]
 Location=C:\Dati\bitLab\Progetti\LaserCat\grbl-pic\doprnt.p1
 Folder=Output
 DeviceName=PIC18F4550
@@ -334,12 +282,12 @@ LanguageToolSuiteID={38171385-97B2-4EC5-BF2C-C2C027BA5B04}
 LanguageToolID={B6D1F1C2-3E8A-49F6-9C0A-75F5EBE32222}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\xc8\v1.33\bin\xc8.exe
 PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)||$(INCDIR)||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|system.c|main.c|motion_control.c|nuts_bolts.c|planner.c|print.c|protocol.c|settings.c|stepper.c||<obj>||<lib>||<lkr>||
+SOLK=<src>|system.c|main.c|nuts_bolts.c|print.c|protocol.c|settings.c|stepper.c|coolant_control.c|eeprom.c|limits.c|probe.c|report.c|serial.c|spindle_control.c||<obj>||<lib>||<lkr>||
 SuiteArgsString=
-ToolArgsString= C9=2,1
+ToolArgsString=C9=2,1
 TraceCmdString=
 DebugOptions=
-[File026]
+[File022]
 Location=C:\Dati\bitLab\Progetti\LaserCat\grbl-pic\doprnt.pre
 Folder=Output
 DeviceName=PIC18F4550
@@ -347,12 +295,12 @@ LanguageToolSuiteID={38171385-97B2-4EC5-BF2C-C2C027BA5B04}
 LanguageToolID={B6D1F1C2-3E8A-49F6-9C0A-75F5EBE32222}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\xc8\v1.33\bin\xc8.exe
 PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)||$(INCDIR)||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|system.c|main.c|motion_control.c|nuts_bolts.c|planner.c|print.c|protocol.c|settings.c|stepper.c||<obj>||<lib>||<lkr>||
+SOLK=<src>|system.c|main.c|nuts_bolts.c|print.c|protocol.c|settings.c|stepper.c|coolant_control.c|eeprom.c|limits.c|probe.c|report.c|serial.c|spindle_control.c||<obj>||<lib>||<lkr>||
 SuiteArgsString=
-ToolArgsString= C9=2,1
+ToolArgsString=C9=2,1
 TraceCmdString=
 DebugOptions=
-[File027]
+[File023]
 Location=C:\Dati\bitLab\Progetti\LaserCat\grbl-pic\grbl-pic.obj
 Folder=Output
 DeviceName=PIC18F4550
@@ -360,12 +308,12 @@ LanguageToolSuiteID={38171385-97B2-4EC5-BF2C-C2C027BA5B04}
 LanguageToolID={B6D1F1C2-3E8A-49F6-9C0A-75F5EBE32222}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\xc8\v1.33\bin\xc8.exe
 PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)||$(INCDIR)||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|system.c|main.c|motion_control.c|nuts_bolts.c|planner.c|print.c|protocol.c|settings.c|stepper.c||<obj>||<lib>||<lkr>||
+SOLK=<src>|system.c|main.c|nuts_bolts.c|print.c|protocol.c|settings.c|stepper.c|coolant_control.c|eeprom.c|limits.c|probe.c|report.c|serial.c|spindle_control.c||<obj>||<lib>||<lkr>||
 SuiteArgsString=
-ToolArgsString= C9=2,1
+ToolArgsString=C9=2,1
 TraceCmdString=
 DebugOptions=
-[File028]
+[File024]
 Location=C:\Dati\bitLab\Progetti\LaserCat\grbl-pic\grbl-pic.lst
 Folder=Output
 DeviceName=PIC18F4550
@@ -373,12 +321,12 @@ LanguageToolSuiteID={38171385-97B2-4EC5-BF2C-C2C027BA5B04}
 LanguageToolID={B6D1F1C2-3E8A-49F6-9C0A-75F5EBE32222}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\xc8\v1.33\bin\xc8.exe
 PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)||$(INCDIR)||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|system.c|main.c|motion_control.c|nuts_bolts.c|planner.c|print.c|protocol.c|settings.c|stepper.c||<obj>||<lib>||<lkr>||
+SOLK=<src>|system.c|main.c|nuts_bolts.c|print.c|protocol.c|settings.c|stepper.c|coolant_control.c|eeprom.c|limits.c|probe.c|report.c|serial.c|spindle_control.c||<obj>||<lib>||<lkr>||
 SuiteArgsString=
-ToolArgsString= C9=2,1
+ToolArgsString=C9=2,1
 TraceCmdString=
 DebugOptions=
-[File029]
+[File025]
 Location=C:\Dati\bitLab\Progetti\LaserCat\grbl-pic\grbl-pic.rlf
 Folder=Output
 DeviceName=PIC18F4550
@@ -386,12 +334,12 @@ LanguageToolSuiteID={38171385-97B2-4EC5-BF2C-C2C027BA5B04}
 LanguageToolID={B6D1F1C2-3E8A-49F6-9C0A-75F5EBE32222}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\xc8\v1.33\bin\xc8.exe
 PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)||$(INCDIR)||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|system.c|main.c|motion_control.c|nuts_bolts.c|planner.c|print.c|protocol.c|settings.c|stepper.c||<obj>||<lib>||<lkr>||
+SOLK=<src>|system.c|main.c|nuts_bolts.c|print.c|protocol.c|settings.c|stepper.c|coolant_control.c|eeprom.c|limits.c|probe.c|report.c|serial.c|spindle_control.c||<obj>||<lib>||<lkr>||
 SuiteArgsString=
-ToolArgsString= C9=2,1
+ToolArgsString=C9=2,1
 TraceCmdString=
 DebugOptions=
-[File030]
+[File026]
 Location=C:\Dati\bitLab\Progetti\LaserCat\grbl-pic\grbl-pic.sdb
 Folder=Output
 DeviceName=PIC18F4550
@@ -399,8 +347,8 @@ LanguageToolSuiteID={38171385-97B2-4EC5-BF2C-C2C027BA5B04}
 LanguageToolID={B6D1F1C2-3E8A-49F6-9C0A-75F5EBE32222}
 LanguageToolLocation=C:\Program Files (x86)\Microchip\xc8\v1.33\bin\xc8.exe
 PPAD=$(BINDIR)||$(TMPDIR)||$(AINDIR)||$(INCDIR)||$(LIBDIR)||$(LKRDIR)||
-SOLK=<src>|system.c|main.c|motion_control.c|nuts_bolts.c|planner.c|print.c|protocol.c|settings.c|stepper.c||<obj>||<lib>||<lkr>||
+SOLK=<src>|system.c|main.c|nuts_bolts.c|print.c|protocol.c|settings.c|stepper.c|coolant_control.c|eeprom.c|limits.c|probe.c|report.c|serial.c|spindle_control.c||<obj>||<lib>||<lkr>||
 SuiteArgsString=
-ToolArgsString= C9=2,1
+ToolArgsString=C9=2,1
 TraceCmdString=
 DebugOptions=

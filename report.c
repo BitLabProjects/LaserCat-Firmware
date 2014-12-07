@@ -30,15 +30,16 @@
 #include "report.h"
 #include "print.h"
 #include "settings.h"
-#include "gcode.h"
+//#include "gcode.h"
 #include "coolant_control.h"
-#include "planner.h"
+//#include "planner.h"
 #include "spindle_control.h"
 #include "stepper.h"
 #include "serial.h"
 
 //TODO
-#define PSTR(x) "todo"
+#define PSTR(x) ""
+#define PSTR1(x) x
 
 // Handles the primary confirmation protocol response for streaming interfaces and human-feedback.
 // For every incoming line, this method responds with an 'ok' for a successful command or an 
@@ -245,7 +246,7 @@ void report_probe_parameters()
 // Prints Grbl NGC parameters (coordinate offsets, probing)
 void report_ngc_parameters()
 {
-  float coord_data[N_AXIS];
+  /*float coord_data[N_AXIS];
   uint8_t coord_select, i;
   for (coord_select = 0; coord_select <= SETTING_INDEX_NCOORD; coord_select++) { 
     if (!(settings_read_coord_data(coord_select,coord_data))) { 
@@ -274,13 +275,14 @@ void report_ngc_parameters()
   printPgmString(PSTR("[TLO:")); // Print tool length offset value
   printFloat_CoordValue(gc_state.tool_length_offset);
   printPgmString(PSTR("]\r\n"));
-  report_probe_parameters(); // Print probe parameters. Not persistent in memory.
+  report_probe_parameters(); // Print probe parameters. Not persistent in memory.*/
 }
 
 
 // Print current gcode parser mode state
 void report_gcode_modes()
 {
+/*
   switch (gc_state.modal.motion) {
     case MOTION_MODE_SEEK : printPgmString(PSTR("[G0")); break;
     case MOTION_MODE_LINEAR : printPgmString(PSTR("[G1")); break;
@@ -334,6 +336,7 @@ void report_gcode_modes()
   printFloat_RateValue(gc_state.feed_rate);
 
   printPgmString(PSTR("]\r\n"));
+*/
 }
 
 // Prints specified startup line
@@ -361,6 +364,7 @@ void report_build_info(char *line)
  // especially during g-code programs with fast, short line segments and high frequency reports (5-20Hz).
 void report_realtime_status()
 {
+/*
   // **Under construction** Bare-bones status report. Provides real-time machine position relative to 
   // the system power on location (0,0,0) and work coordinate position (G54 and G92 applied). Eventually
   // to be added are distance to go on block, processed block id, and feed rate. Also a settings bitmask
@@ -442,4 +446,5 @@ void report_realtime_status()
   #endif    
   
   printPgmString(PSTR(">\r\n"));
+*/
 }

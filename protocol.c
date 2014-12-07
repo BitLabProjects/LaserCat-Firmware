@@ -28,10 +28,10 @@
 #include "serial.h"
 #include "settings.h"
 #include "protocol.h"
-#include "gcode.h"
-#include "planner.h"
+//#include "gcode.h"
+//#include "planner.h"
 #include "stepper.h"
-#include "motion_control.h"
+//#include "motion_control.h"
 #include "report.h"
 
 
@@ -60,7 +60,7 @@ static void protocol_execute_line(char *line)
 
   } else {
     // Parse and execute g-code block!
-    report_status_message(gc_execute_line(line));
+    //TODO ASSERT FALSE report_status_message(gc_execute_line(line));
   }
 }
 
@@ -73,9 +73,16 @@ void protocol_main_loop()
   // ------------------------------------------------------------
   // Complete initialization procedures upon a power-up or reset.
   // ------------------------------------------------------------
-  
+  uint8_t c;
+
   // Print welcome message   
-  report_init_message();
+  //report_init_message();
+  while(true)
+  {
+    c = serial_read();
+    if (c != SERIAL_NO_DATA)
+      serial_write(c);
+  }
 
   // Check for and report alarm state after a reset, error, or an initial power up.
   if (sys.state == STATE_ALARM) {
@@ -92,7 +99,7 @@ void protocol_main_loop()
   
   uint8_t iscomment = false;
   uint8_t char_counter = 0;
-  uint8_t c;
+  
   for (;;) {
 
     // Process one line of incoming serial data, as the data becomes available. Performs an
@@ -234,8 +241,8 @@ void protocol_execute_runtime()
       // with the feed hold should be fine for most, if not all, operational scenarios.
       if (sys.state == STATE_CYCLE) {
         sys.state = STATE_HOLD;
-        st_update_plan_block_parameters();
-        st_prep_buffer();
+        //TODO st_update_plan_block_parameters();
+        //TODO st_prep_buffer();
         sys.auto_start = false; // Disable planner auto start upon feed hold.
       }
       bit_false_atomic(sys.execute,EXEC_FEED_HOLD);
@@ -245,7 +252,7 @@ void protocol_execute_runtime()
     if (rt_exec & EXEC_CYCLE_START) { 
       if (sys.state == STATE_QUEUED) {
         sys.state = STATE_CYCLE;
-        st_prep_buffer(); // Initialize step segment buffer before beginning cycle.
+        //TODO st_prep_buffer(); // Initialize step segment buffer before beginning cycle.
         st_wake_up();
         if (bit_istrue(settings.flags,BITFLAG_AUTO_START)) {
           sys.auto_start = true; // Re-enable auto start after feed hold.
@@ -262,8 +269,8 @@ void protocol_execute_runtime()
     // cycle reinitializations. The stepper path should continue exactly as if nothing has happened.   
     // NOTE: EXEC_CYCLE_STOP is set by the stepper subsystem when a cycle or feed hold completes.
     if (rt_exec & EXEC_CYCLE_STOP) {
-      if ( plan_get_current_block() ) { sys.state = STATE_QUEUED; }
-      else { sys.state = STATE_IDLE; }
+      //TODO if ( plan_get_current_block() ) { sys.state = STATE_QUEUED; }
+      //TODO else { sys.state = STATE_IDLE; }
       bit_false_atomic(sys.execute,EXEC_CYCLE_STOP);
     }
 
@@ -273,7 +280,7 @@ void protocol_execute_runtime()
   // are runtime and require a direct and controlled interface to the main stepper program.
 
   // Reload step segment buffer
-  if (sys.state & (STATE_CYCLE | STATE_HOLD | STATE_HOMING)) { st_prep_buffer(); }  
+  //TODO if (sys.state & (STATE_CYCLE | STATE_HOLD | STATE_HOMING)) { st_prep_buffer(); }  
   
 }  
 
@@ -282,6 +289,8 @@ void protocol_execute_runtime()
 // during a synchronize call, if it should happen. Also, waits for clean cycle end.
 void protocol_buffer_synchronize()
 {
+//TODO 
+/*
   // If system is queued, ensure cycle resumes if the auto start flag is present.
   protocol_auto_cycle_start();
   // Check and set auto start to resume cycle after synchronize and caller completes.
@@ -289,7 +298,8 @@ void protocol_buffer_synchronize()
   while (plan_get_current_block() || (sys.state == STATE_CYCLE)) { 
     protocol_execute_runtime();   // Check and execute run-time commands
     if (sys.abort) { return; } // Check for system abort
-  }    
+  }
+*/    
 }
 
 

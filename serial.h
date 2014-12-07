@@ -66,4 +66,7 @@ uint8_t serial_get_rx_buffer_count();
 // NOTE: Not used except for debugging and ensuring no TX bottlenecks.
 uint8_t serial_get_tx_buffer_count();
 
+void serial_rx_interrupt();
+void serial_tx_interrupt();
+
 #endif
