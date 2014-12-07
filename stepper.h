@@ -43,6 +43,13 @@ void st_go_idle();
 // Reset the stepper subsystem variables       
 void st_reset();
 
+typedef struct {  
+  uint8_t direction_bits;
+  uint32_t steps[N_AXIS];
+  uint32_t step_event_count;
+} st_block_t;
+
 void stepper_set_settings(uint8_t step_invert_mask, uint8_t dir_invert_mask);
+void stepper_store_planner_block(uint8_t blockIndex, struct st_block_t* block);
 
 #endif

@@ -61,11 +61,11 @@
 // NOTE: This data is copied from the prepped planner blocks so that the planner blocks may be
 // discarded when entirely consumed and completed by the segment buffer. Also, AMASS alters this
 // data for its own use. 
-typedef struct {  
+/*typedef struct {  
   uint8_t direction_bits;
   uint32_t steps[N_AXIS];
   uint32_t step_event_count;
-} st_block_t;
+} st_block_t;*/
 static st_block_t st_block_buffer[SEGMENT_BUFFER_SIZE-1];
 
 // Primary stepper segment ring buffer. Contains small, short line segments for the stepper 
@@ -191,6 +191,10 @@ void stepper_set_settings(uint8_t step_invert_mask, uint8_t dir_invert_mask)
 {
   step_port_invert_mask = step_invert_mask;
   dir_port_invert_mask = dir_invert_mask;
+}
+void stepper_store_planner_block(uint8_t blockIndex, struct st_block_t* block)
+{
+  st_block_buffer[blockIndex] = *block;
 }
 
 // Stepper state initialization. Cycle should only start if the st.cycle_start flag is

@@ -73,6 +73,7 @@ static void protocol_execute_line(char *line)
 #define INIT_COMMAND 1
 #define RESET_COMMAND 2
 #define SETSETTINGS_COMMAND 3
+#define STOREPLANNERBLOCK_COMMAND 6
 #define OK_COMMAND 8
 #define ERROR_COMMAND 9
 
@@ -141,6 +142,21 @@ void command_receive_and_execute() {
         settings.flags = commandInterpreter.data[5];
         stepper_set_settings(commandInterpreter.data[6], commandInterpreter.data[7]);
         command_send(OK_COMMAND);
+        break;
+
+      case STOREPLANNERBLOCK_COMMAND:
+        if (commandInterpreter.length != 18) { 
+          command_send(ERROR_COMMAND);
+          break;
+        }
+        uint8_t blockIndex = commandInterpreter.data[1];
+        struct st_block_t block;
+        int i;
+        uint8_t* dst_ptr = (uint8_t*)&block;
+        uint8_t* src_ptr = &commandInterpreter.data[2];
+        for(i=0; i<17; i++)
+          *(dst_ptr++) = *(src_ptr++);
+        stepper_store_planner_block(blockIndex, &block);
         break;
 
       default:
