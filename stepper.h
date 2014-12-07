@@ -43,4 +43,6 @@ void st_go_idle();
 // Reset the stepper subsystem variables       
 void st_reset();
 
+void stepper_set_settings(uint8_t step_invert_mask, uint8_t dir_invert_mask);
+
 #endif

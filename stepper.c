@@ -114,7 +114,7 @@ static volatile uint8_t segment_buffer_tail;
 static uint8_t segment_buffer_head;
 static uint8_t segment_next_head;
 
-// Step and direction port invert masks. 
+// Step and direction port invert masks.
 static uint8_t step_port_invert_mask;
 static uint8_t dir_port_invert_mask;
 
@@ -187,6 +187,11 @@ static st_prep_t prep;
   are shown and defined in the above illustration.
 */
 
+void stepper_set_settings(uint8_t step_invert_mask, uint8_t dir_invert_mask)
+{
+  step_port_invert_mask = step_invert_mask;
+  dir_port_invert_mask = dir_invert_mask;
+}
 
 // Stepper state initialization. Cycle should only start if the st.cycle_start flag is
 // enabled. Startup init and limits call this function but shouldn't start the cycle.

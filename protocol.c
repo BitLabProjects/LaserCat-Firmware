@@ -72,6 +72,7 @@ static void protocol_execute_line(char *line)
 
 #define INIT_COMMAND 1
 #define RESET_COMMAND 2
+#define SETSETTINGS_COMMAND 3
 #define OK_COMMAND 8
 #define ERROR_COMMAND 9
 
@@ -124,6 +125,21 @@ void command_receive_and_execute() {
 
       case RESET_COMMAND:
         st_reset();
+        command_send(OK_COMMAND);
+        break;
+
+      case SETSETTINGS_COMMAND:
+        if (commandInterpreter.length != 8) { 
+          //7 parameters plus the command
+          command_send(ERROR_COMMAND);
+          break;
+        }
+        settings.pulse_microseconds = commandInterpreter.data[1];
+        settings.step_invert_mask = commandInterpreter.data[2];
+        settings.dir_invert_mask = commandInterpreter.data[3];
+        settings.stepper_idle_lock_time = commandInterpreter.data[4];
+        settings.flags = commandInterpreter.data[5];
+        stepper_set_settings(commandInterpreter.data[6], commandInterpreter.data[7]);
         command_send(OK_COMMAND);
         break;
 
