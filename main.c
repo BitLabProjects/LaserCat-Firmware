@@ -54,7 +54,7 @@ int main(void)
   }*/
 
   //settings_init(); // Load grbl settings from EEPROM
-  //stepper_init();  // Configure stepper pins and interrupt timers
+  stepper_init();  // Configure stepper pins and interrupt timers
   system_init();   // Configure pinout pins and pin-change interrupt
   
   memset(&sys, 0, sizeof(sys));  // Clear all system variables

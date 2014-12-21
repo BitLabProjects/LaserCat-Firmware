@@ -32,12 +32,12 @@
 
 
 uint8_t serial_rx_buffer[RX_BUFFER_SIZE];
-uint8_t serial_rx_buffer_head = 0;
-volatile uint8_t serial_rx_buffer_tail = 0;
+uint8_t serial_rx_buffer_head;
+volatile uint8_t serial_rx_buffer_tail;
 
 uint8_t serial_tx_buffer[TX_BUFFER_SIZE];
-uint8_t serial_tx_buffer_head = 0;
-volatile uint8_t serial_tx_buffer_tail = 0;
+uint8_t serial_tx_buffer_head;
+volatile uint8_t serial_tx_buffer_tail;
 
 // Returns the number of bytes used in the RX serial buffer.
 uint8_t serial_get_rx_buffer_count()
@@ -107,6 +107,11 @@ void serial_init()
   PIR1bits.RCIF = 0;
   PIE1bits.RCIE = 1;
 #endif
+
+  serial_rx_buffer_head = 0;
+  serial_rx_buffer_tail = 0;
+  serial_tx_buffer_head = 0;
+  serial_tx_buffer_tail = 0;
 }
 
 // Writes one byte to the TX serial buffer. Called by main program.

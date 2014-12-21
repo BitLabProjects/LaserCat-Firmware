@@ -205,11 +205,13 @@ void stepper_store_segment_block(segment_t* segment)
 }
 uint8_t stepper_has_more_segment_buffer()
 {
-  return segment_buffer_tail != segment_next_head;
-  //if (segment_buffer_head > segment_buffer_tail)
-  //  return segment_buffer_head - segment_buffer_tail;
-  //else
-  //  return SEGMENT_BUFFER_SIZE - (segment_buffer_tail - segment_buffer_head) - 1;
+  //return segment_buffer_tail != segment_next_head;
+  uint8_t count;
+  if (segment_buffer_head >= segment_buffer_tail)
+    count = segment_buffer_head - segment_buffer_tail;
+  else
+    count = SEGMENT_BUFFER_SIZE - (segment_buffer_tail - segment_buffer_head);
+  return SEGMENT_BUFFER_SIZE - count - 1;
 }
 
 // Stepper state initialization. Cycle should only start if the st.cycle_start flag is
@@ -396,7 +398,7 @@ void stepper_interrupt()
   }
 
   //SB!Moved the period set because we don't have a period register, and must initialize the counter to max - desired period
-  //TMR1 = 0xFFFF - (st.exec_segment->cycles_per_tick - TMR1);
+  TMR1 = 0xFFFF - (st.exec_segment->cycles_per_tick - TMR1);
   //TMR1 = 1;
     
   // Check probing state.
@@ -523,10 +525,11 @@ void stepper_init()
   STEPPERS_DISABLE_DDR |= 1<<STEPPERS_DISABLE_BIT;
   DIRECTION_DDR |= DIRECTION_MASK;
 
+  T1CONbits.TMR1ON = 0; //Turn timer off
   T1CONbits.T1CKPS0 = 0; //Prescaler 1:1
   T1CONbits.T1CKPS1 = 0;
   T1CONbits.TMR1CS = 0; //Fosc/4, uses the CPU clock source
-  T1CONbits.TMR1ON = 0; //Turn timer off
+  PIR1bits.TMR1IF = 0;
   PIE1bits.TMR1IE = 1;
 
 //TODO

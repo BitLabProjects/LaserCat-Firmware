@@ -228,7 +228,7 @@ void command_receive_and_execute() {
   if (execute) {
     switch (commandInterpreter.data[0]) {
       case INIT_COMMAND:
-        stepper_init();
+        //Already done on startup stepper_init();
         command_send(OK_COMMAND);
         break;
 
