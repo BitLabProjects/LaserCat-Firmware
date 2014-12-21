@@ -65,10 +65,18 @@ static void protocol_execute_line(char *line)
 }
 
 #define CI_START_CHAR '#' //35 decimal
+#define CI_END_CHAR '$' //36 decimal
 
-#define CISTATE_IDLE 0
-#define CISTATE_STARTCHAR 1
-#define CISTATE_READINGPACKET 3
+#define CISTATE_WAITINGFOR_STARTCHAR 0
+#define CISTATE_WAITINGFOR_PACKETID 1
+#define CISTATE_WAITINGFOR_LENGTH 2
+#define CISTATE_READINGDATA 3
+#define CISTATE_WAITINGFOR_CHECKSUM 4
+#define CISTATE_WAITINGFOR_ENDCHAR 5
+
+#define CIRXERROR_INVALIDPACKETID 1
+#define CIRXERROR_INVALIDENDCHAR 2
+#define CIRXERROR_INVALIDCHECKSUM 3
 
 #define INIT_COMMAND 1
 #define RESET_COMMAND 2
@@ -86,31 +94,70 @@ static void protocol_execute_line(char *line)
 
 struct CommandInterpreter {
   uint8_t state;
+  uint8_t previous_packet_id;
+  uint8_t packet_id;
   uint8_t length;
   uint8_t data[20];
+  uint8_t checksum;
   uint8_t data_count;
 };
 
 struct CommandInterpreter commandInterpreter;
 
+uint8_t calculateChksum(uint8_t id, uint8_t length, uint8_t* data, uint8_t command){
+  uint8_t chksum = 0;
+  chksum ^= id;
+  chksum ^= length;
+  chksum ^= command;
+  for(uint8_t i = 0; i < length; i++){
+    chksum ^= data[i];
+  }
+  return chksum;
+}
+
 void command_send(uint8_t command) {
   serial_write(CI_START_CHAR);
-  serial_write(1); //Length
+  serial_write(commandInterpreter.packet_id);
+  serial_write(1); //Length  
   serial_write(command); //Command ID
+  serial_write(commandInterpreter.packet_id ^ 1 ^ command);
+  serial_write(CI_END_CHAR);
 }
 void command_send_byte(uint8_t command, uint8_t data) {
   serial_write(CI_START_CHAR);
+  serial_write(commandInterpreter.packet_id);
   serial_write(2); //Length
   serial_write(command); //Command ID
   serial_write(data);
+  serial_write(commandInterpreter.packet_id ^ 2 ^ command ^ data);
+  serial_write(CI_END_CHAR);
 }
 void command_send_array(uint8_t command, uint8_t* data, uint8_t data_length) {
   serial_write(CI_START_CHAR);
+  serial_write(commandInterpreter.packet_id);
   serial_write(1 + data_length); //Length
   serial_write(command); //Command ID
   int i;
   for(i=0; i<data_length; i++)
     serial_write(data[i]);
+  serial_write(calculateChksum(commandInterpreter.packet_id, 1 + data_length, data, command));
+  serial_write(CI_END_CHAR);
+}
+
+void receive_error(uint8_t error) {
+
+  uint8_t data = error + 1;
+  data = data + 1;
+
+  serial_write(data);
+}
+
+uint8_t isChecksumValid(struct CommandInterpreter* ci) {
+  if (calculateChksum(ci->packet_id, ci->length, ci->data, 0) == ci->checksum){
+    return true;
+  } else{
+    return false;
+  }
 }
 
 void command_receive_and_execute() {
@@ -119,21 +166,61 @@ void command_receive_and_execute() {
   if (serial_has_bytes()) {
     c = serial_read();
     switch(commandInterpreter.state) {
-      case CISTATE_IDLE:
+      case CISTATE_WAITINGFOR_STARTCHAR:
         if (c == CI_START_CHAR)
-          commandInterpreter.state = CISTATE_STARTCHAR;
+          commandInterpreter.state = CISTATE_WAITINGFOR_PACKETID;
         break;
-      case CISTATE_STARTCHAR:
+
+      case CISTATE_WAITINGFOR_PACKETID:
+        commandInterpreter.packet_id = c;
+        uint8_t expected_packet_id;
+        if (commandInterpreter.previous_packet_id == 255)
+          expected_packet_id = 0;
+        else
+          expected_packet_id = commandInterpreter.previous_packet_id + 1;
+        if (c != expected_packet_id) {
+          receive_error(CIRXERROR_INVALIDPACKETID);
+          //TODO Aspettare il carattere di fine e fare l'escaping in mezzo
+          commandInterpreter.state = CISTATE_WAITINGFOR_STARTCHAR;
+        } else {
+          commandInterpreter.previous_packet_id = c;
+          commandInterpreter.state = CISTATE_WAITINGFOR_LENGTH;
+        }
+        break;
+
+      case CISTATE_WAITINGFOR_LENGTH:
         commandInterpreter.length = c;
         commandInterpreter.data_count = 0;
-        commandInterpreter.state = CISTATE_READINGPACKET;
+        commandInterpreter.state = CISTATE_READINGDATA;
         break;
-      case CISTATE_READINGPACKET:
+
+      case CISTATE_READINGDATA:
         commandInterpreter.data[commandInterpreter.data_count] = c;
         commandInterpreter.data_count += 1;
         if (commandInterpreter.data_count == commandInterpreter.length) {
-            execute = true;
-            commandInterpreter.state = CISTATE_IDLE;
+            commandInterpreter.state = CISTATE_WAITINGFOR_CHECKSUM;
+        }
+        break;
+
+      case CISTATE_WAITINGFOR_CHECKSUM:
+        commandInterpreter.checksum = c;
+        //Verify checksum
+        uint8_t is_checksum_valid = isChecksumValid(&commandInterpreter);
+        if (is_checksum_valid) {
+          execute = true;
+        }
+        else {
+          receive_error(CIRXERROR_INVALIDCHECKSUM);
+        }
+        commandInterpreter.state = CISTATE_WAITINGFOR_STARTCHAR;
+        break;
+
+      case CISTATE_WAITINGFOR_ENDCHAR:
+        if (c == CI_END_CHAR)
+          commandInterpreter.state = CISTATE_WAITINGFOR_ENDCHAR;
+        else {
+          commandInterpreter.state = CISTATE_WAITINGFOR_STARTCHAR;
+          receive_error(CIRXERROR_INVALIDENDCHAR);
         }
         break;
     }
@@ -238,6 +325,7 @@ void protocol_main_loop()
   // ------------------------------------------------------------
   uint8_t c;
 
+  commandInterpreter.previous_packet_id = 255; //-1, 0 is the next packet
   // Print welcome message   
   //report_init_message();
   while(true)

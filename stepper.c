@@ -206,6 +206,10 @@ void stepper_store_segment_block(segment_t* segment)
 uint8_t stepper_has_more_segment_buffer()
 {
   return segment_buffer_tail != segment_next_head;
+  //if (segment_buffer_head > segment_buffer_tail)
+  //  return segment_buffer_head - segment_buffer_tail;
+  //else
+  //  return SEGMENT_BUFFER_SIZE - (segment_buffer_tail - segment_buffer_head) - 1;
 }
 
 // Stepper state initialization. Cycle should only start if the st.cycle_start flag is
@@ -359,7 +363,7 @@ void stepper_interrupt()
 
       // Initialize step segment timing per step and load number of steps to execute.
       //OCR1A = st.exec_segment->cycles_per_tick;
-      //TODO TMR1 = 0xFFFF - st.exec_segment->cycles_per_tick;
+      //TMR1 = 0xFFFF - st.exec_segment->cycles_per_tick;
 
       st.step_count = st.exec_segment->n_step; // NOTE: Can sometimes be zero when moving slow.
       // If the new segment starts a new planner block, initialize stepper variables and counters.
@@ -388,10 +392,13 @@ void stepper_interrupt()
       st_go_idle(false);
       bit_true_atomic(sys.execute,EXEC_CYCLE_STOP); // Flag main program for cycle end
       return; // Nothing to do but exit.
-    }  
+    }
   }
-  
-  
+
+  //SB!Moved the period set because we don't have a period register, and must initialize the counter to max - desired period
+  //TMR1 = 0xFFFF - (st.exec_segment->cycles_per_tick - TMR1);
+  //TMR1 = 1;
+    
   // Check probing state.
   probe_state_monitor();
    

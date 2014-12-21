@@ -192,8 +192,12 @@ void serial_rx_interrupt()
   if (next_head != serial_rx_buffer_tail) {
     serial_rx_buffer[serial_rx_buffer_head] = data;
     serial_rx_buffer_head = next_head;        
+  } else {
+    //Huston we have a problem!
+    //TODO: else alarm on overflow?
+    data = data + 1;
+    return;
   }
-  //TODO: else alarm on overflow?
 }
 
 void serial_reset_read_buffer() 
