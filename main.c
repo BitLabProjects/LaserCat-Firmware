@@ -99,7 +99,7 @@ int main(void)
 }
 
 void interrupt int_low() {
-  INTCONbits.GIE = 0;
+  //INTCONbits.GIE = 0;
 
   if (PIR1bits.RCIF) {
     serial_rx_interrupt();
@@ -115,5 +115,5 @@ void interrupt int_low() {
     stepper_interrupt();
   }
 
-  INTCONbits.GIE = 1;
+  //INTCONbits.GIE = 1;
 }

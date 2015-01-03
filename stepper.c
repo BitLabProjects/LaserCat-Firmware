@@ -218,11 +218,12 @@ uint8_t stepper_has_more_segment_buffer()
 // enabled. Startup init and limits call this function but shouldn't start the cycle.
 void st_wake_up(uint8_t setup_and_enable_motors) 
 {
-
+//TODO
+/*
   // Enable stepper drivers.
   if (bit_istrue(settings.flags,BITFLAG_INVERT_ST_ENABLE)) { STEPPERS_DISABLE_PORT |= (1<<STEPPERS_DISABLE_BIT); }
   else { STEPPERS_DISABLE_PORT &= ~(1<<STEPPERS_DISABLE_BIT); }
-
+*/
   //if (sys.state & (STATE_CYCLE | STATE_HOMING)) {
   if (setup_and_enable_motors) {
     // Initialize stepper output bits
@@ -332,14 +333,17 @@ void stepper_interrupt()
   if (busy) { return; } // The busy-flag is used to avoid reentering this interrupt
   
   // Set the direction pins a couple of nanoseconds before we step the steppers
-  DIRECTION_PORT = (DIRECTION_PORT & ~DIRECTION_MASK) | (st.dir_outbits & DIRECTION_MASK);
+  //TODO DIRECTION_PORT = (DIRECTION_PORT & ~DIRECTION_MASK) | (st.dir_outbits & DIRECTION_MASK);
 
   // Then pulse the stepping pins
+//TODO 
+/*
   #ifdef STEP_PULSE_DELAY
     st.step_bits = (STEP_PORT & ~STEP_MASK) | st.step_outbits; // Store out_bits to prevent overwriting.
   #else  // Normal operation
     STEP_PORT = (STEP_PORT & ~STEP_MASK) | st.step_outbits;
   #endif  
+*/
 
   // Enable step pulse reset timer so that The Stepper Port Reset Interrupt can reset the signal after
   // exactly settings.pulse_microseconds microseconds, independent of the main Timer1 prescaler.
@@ -348,7 +352,7 @@ void stepper_interrupt()
   //TCCR0B = (1<<CS01); // Begin Timer0. Full speed, 1/8 prescaler
 
   busy = true;
-  sei(); // Re-enable interrupts to allow Stepper Port Reset Interrupt to fire on-time. 
+  //sei(); // Re-enable interrupts to allow Stepper Port Reset Interrupt to fire on-time. 
          // NOTE: The remaining code in this ISR will finish before returning to main program.
     
   // If there is no step segment, attempt to pop one from the stepper buffer
@@ -358,10 +362,10 @@ void stepper_interrupt()
       // Initialize new step segment and load number of steps to execute
       st.exec_segment = &segment_buffer[segment_buffer_tail];
 
-      #ifndef ADAPTIVE_MULTI_AXIS_STEP_SMOOTHING
+      /*#ifndef ADAPTIVE_MULTI_AXIS_STEP_SMOOTHING
         // With AMASS is disabled, set timer prescaler for segments with slow step frequencies (< 250Hz).
         TCCR1B = (TCCR1B & ~(0x07<<CS10)) | (st.exec_segment->prescaler<<CS10);
-      #endif
+      #endif*/
 
       // Initialize step segment timing per step and load number of steps to execute.
       //OCR1A = st.exec_segment->cycles_per_tick;
@@ -402,7 +406,7 @@ void stepper_interrupt()
   //TMR1 = 1;
     
   // Check probing state.
-  probe_state_monitor();
+  //TODO probe_state_monitor();
    
   // Reset step out bits.
   st.step_outbits = 0; 

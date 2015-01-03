@@ -91,6 +91,7 @@ static void protocol_execute_line(char *line)
 #define OKPOSITION_COMMAND 11
 #define ASKHASMORESEGMENTBUFFER_COMMAND 12
 #define OKSEGMENTBUFFER_COMMAND 13
+#define UNDEFINED_COMMAND 99
 
 struct CommandInterpreter {
   uint8_t state;
@@ -104,6 +105,14 @@ struct CommandInterpreter {
 
 struct CommandInterpreter commandInterpreter;
 
+#define DEBUGARRAYLENGTH 5
+uint8_t debugarray[DEBUGARRAYLENGTH];
+void debugarray_add(uint8_t data) {
+  for(uint8_t i=0; i < DEBUGARRAYLENGTH-1; i++)
+    debugarray[i] = debugarray[i+1];
+  debugarray[DEBUGARRAYLENGTH-1] = data;
+}
+
 uint8_t calculateChksum(uint8_t id, uint8_t length, uint8_t* data, uint8_t command){
   uint8_t chksum = 0;
   chksum ^= id;
@@ -116,6 +125,7 @@ uint8_t calculateChksum(uint8_t id, uint8_t length, uint8_t* data, uint8_t comma
 }
 
 void command_send(uint8_t command) {
+  debugarray_add(commandInterpreter.packet_id);
   serial_write(CI_START_CHAR);
   serial_write(commandInterpreter.packet_id);
   serial_write(1); //Length  
@@ -123,7 +133,16 @@ void command_send(uint8_t command) {
   serial_write(commandInterpreter.packet_id ^ 1 ^ command);
   serial_write(CI_END_CHAR);
 }
+
+void command_send_error() {
+  uint8_t data = ERROR_COMMAND;
+  data = data + 1;
+  command_send(data - 1);
+}
+
+
 void command_send_byte(uint8_t command, uint8_t data) {
+  debugarray_add(commandInterpreter.packet_id);
   serial_write(CI_START_CHAR);
   serial_write(commandInterpreter.packet_id);
   serial_write(2); //Length
@@ -133,6 +152,7 @@ void command_send_byte(uint8_t command, uint8_t data) {
   serial_write(CI_END_CHAR);
 }
 void command_send_array(uint8_t command, uint8_t* data, uint8_t data_length) {
+  debugarray_add(commandInterpreter.packet_id);
   serial_write(CI_START_CHAR);
   serial_write(commandInterpreter.packet_id);
   serial_write(1 + data_length); //Length
@@ -208,20 +228,21 @@ void command_receive_and_execute() {
         uint8_t is_checksum_valid = isChecksumValid(&commandInterpreter);
         if (is_checksum_valid) {
           execute = true;
+          commandInterpreter.state = CISTATE_WAITINGFOR_ENDCHAR;
         }
         else {
           receive_error(CIRXERROR_INVALIDCHECKSUM);
+          commandInterpreter.state = CISTATE_WAITINGFOR_STARTCHAR;
         }
-        commandInterpreter.state = CISTATE_WAITINGFOR_STARTCHAR;
         break;
 
       case CISTATE_WAITINGFOR_ENDCHAR:
         if (c == CI_END_CHAR)
-          commandInterpreter.state = CISTATE_WAITINGFOR_ENDCHAR;
+          ;
         else {
-          commandInterpreter.state = CISTATE_WAITINGFOR_STARTCHAR;
           receive_error(CIRXERROR_INVALIDENDCHAR);
         }
+        commandInterpreter.state = CISTATE_WAITINGFOR_STARTCHAR;
         break;
     }
   }
@@ -240,7 +261,7 @@ void command_receive_and_execute() {
       case SETSETTINGS_COMMAND:
         if (commandInterpreter.length != 8) { 
           //7 parameters plus the command
-          command_send(ERROR_COMMAND);
+          command_send_error();
           break;
         }
         settings.pulse_microseconds = commandInterpreter.data[1];
@@ -254,7 +275,7 @@ void command_receive_and_execute() {
 
       case WAKEUP_COMMAND:
         if (commandInterpreter.length != 2) {
-          command_send(ERROR_COMMAND);
+          command_send_error();
           break;
         }
         st_wake_up(commandInterpreter.data[1]);
@@ -263,7 +284,7 @@ void command_receive_and_execute() {
 
       case GOIDLE_COMMAND:
         if (commandInterpreter.length != 2) {
-          command_send(ERROR_COMMAND);
+          command_send_error();
           break;
         }
         st_go_idle(commandInterpreter.data[1]);
@@ -272,7 +293,7 @@ void command_receive_and_execute() {
 
       case STOREPLANNERBLOCK_COMMAND:
         if (commandInterpreter.length != 19) {
-          command_send(ERROR_COMMAND);
+          command_send_error();
           break;
         }
         uint8_t blockIndex = commandInterpreter.data[1];
@@ -288,7 +309,7 @@ void command_receive_and_execute() {
 
       case STORESEGMENTBLOCK_COMMAND:
         if (commandInterpreter.length != 8) { 
-          command_send(ERROR_COMMAND);
+          command_send_error();
           break;
         }
         segment_t segment;
@@ -308,10 +329,15 @@ void command_receive_and_execute() {
         command_send_byte(OKSEGMENTBUFFER_COMMAND, stepper_has_more_segment_buffer());
         break;
 
+      case UNDEFINED_COMMAND:
+        command_send_error();
+        break;
+
       default:
-        command_send(ERROR_COMMAND);
+        command_send_error();
         break;
     }
+    commandInterpreter.data[0] = UNDEFINED_COMMAND;
   }
 }
 
