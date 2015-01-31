@@ -362,10 +362,12 @@ void stepper_interrupt()
       // Initialize new step segment and load number of steps to execute
       st.exec_segment = &segment_buffer[segment_buffer_tail];
 
-      /*#ifndef ADAPTIVE_MULTI_AXIS_STEP_SMOOTHING
+      /*
+      #ifndef ADAPTIVE_MULTI_AXIS_STEP_SMOOTHING
         // With AMASS is disabled, set timer prescaler for segments with slow step frequencies (< 250Hz).
         TCCR1B = (TCCR1B & ~(0x07<<CS10)) | (st.exec_segment->prescaler<<CS10);
-      #endif*/
+      #endif
+      */
 
       // Initialize step segment timing per step and load number of steps to execute.
       //OCR1A = st.exec_segment->cycles_per_tick;
@@ -379,7 +381,8 @@ void stepper_interrupt()
         st.exec_block = &st_block_buffer[st.exec_block_index];
         
         // Initialize Bresenham line and distance counters
-        st.counter_x = (st.exec_block->step_event_count >> 1);
+        uint32_t local = st.exec_block->step_event_count;
+        st.counter_x = (local >> 1);
         st.counter_y = st.counter_x;
         st.counter_z = st.counter_x;        
       }
@@ -388,21 +391,48 @@ void stepper_interrupt()
 
       #ifdef ADAPTIVE_MULTI_AXIS_STEP_SMOOTHING
         // With AMASS enabled, adjust Bresenham axis increment counters according to AMASS level.
-        st.steps[X_AXIS] = st.exec_block->steps[X_AXIS] >> st.exec_segment->amass_level;
-        st.steps[Y_AXIS] = st.exec_block->steps[Y_AXIS] >> st.exec_segment->amass_level;
-        st.steps[Z_AXIS] = st.exec_block->steps[Z_AXIS] >> st.exec_segment->amass_level;
+        uint8_t amass_level = st.exec_segment->amass_level;
+        //<Magic>
+        //SB!This code does not shift property
+        
+        //Topolino---------------------
+
+        st.steps[X_AXIS] = st.exec_block->steps[X_AXIS] >> amass_level;
+        //st.steps[Y_AXIS] = st.exec_block->steps[Y_AXIS] >> amass_level;
+        //st.steps[Z_AXIS] = st.exec_block->steps[Z_AXIS] >> amass_level;
+
+        //Pluto---------------------
+
+        uint32_t stepsBefore; 
+        stepsBefore = st.exec_block->steps[X_AXIS];
+        st.steps[X_AXIS] = stepsBefore >> amass_level;
+
+        //Pippo---------------------
+
+        stepsBefore = st.exec_block->steps[Y_AXIS];
+        st.steps[Y_AXIS] = stepsBefore >> amass_level;
+
+        stepsBefore = st.exec_block->steps[Z_AXIS];
+        st.steps[Z_AXIS] = stepsBefore >> amass_level;
+        //</Magic>
+
+        
+        //st.steps[Z_AXIS] = st.exec_block->steps[Z_AXIS] >> st.exec_segment->amass_level;
+        //st.steps[Z_AXIS] = (st.exec_block->steps[Z_AXIS]) >> (st.exec_segment->amass_level);
       #endif
       
     } else {
       // Segment buffer empty. Shutdown.
-      st_go_idle(false);
-      bit_true_atomic(sys.execute,EXEC_CYCLE_STOP); // Flag main program for cycle end
+      //st_go_idle(false);
+      //bit_true_atomic(sys.execute,EXEC_CYCLE_STOP); // Flag main program for cycle end
+      busy = false;
       return; // Nothing to do but exit.
     }
   }
 
   //SB!Moved the period set because we don't have a period register, and must initialize the counter to max - desired period
-  TMR1 = 0xFFFF - (st.exec_segment->cycles_per_tick - TMR1);
+  //TMR1 = 0xFFFF - (st.exec_segment->cycles_per_tick - TMR1);
+  TMR1 = 0xF000;
   //TMR1 = 1;
     
   // Check probing state.

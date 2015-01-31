@@ -92,11 +92,12 @@ void serial_init()
   TXSTAbits.BRGH = 1; //BRG ad alta velocità
   BAUDCONbits.BRG16 = 1;  //16bit per il SPBRG
   //SPBRG = 103; // 1200 baud/sec a 4MHz
-  //SPBRG = 103; // 115000 baud/sec a 48MHz
+  
+  SPBRG = 103; // 115000 baud/sec a 48MHz
   
   // 28800 baud/sec a 48MHz
-  SPBRGH = 1;
-  SPBRG = 156; 
+  //SPBRGH = 1;
+  //SPBRG = 156; 
 
   
   //SPBRG = 13; // 115000 baud/sec a 8MHz

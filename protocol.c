@@ -77,6 +77,7 @@ static void protocol_execute_line(char *line)
 #define CIRXERROR_INVALIDPACKETID 1
 #define CIRXERROR_INVALIDENDCHAR 2
 #define CIRXERROR_INVALIDCHECKSUM 3
+#define CIRXERROR_INVALIDARGUMENTS 4
 
 #define INIT_COMMAND 1
 #define RESET_COMMAND 2
@@ -105,6 +106,7 @@ struct CommandInterpreter {
 
 struct CommandInterpreter commandInterpreter;
 
+/*
 #define DEBUGARRAYLENGTH 5
 uint8_t debugarray[DEBUGARRAYLENGTH];
 void debugarray_add(uint8_t data) {
@@ -112,6 +114,7 @@ void debugarray_add(uint8_t data) {
     debugarray[i] = debugarray[i+1];
   debugarray[DEBUGARRAYLENGTH-1] = data;
 }
+*/
 
 uint8_t calculateChksum(uint8_t id, uint8_t length, uint8_t* data, uint8_t command){
   uint8_t chksum = 0;
@@ -125,7 +128,7 @@ uint8_t calculateChksum(uint8_t id, uint8_t length, uint8_t* data, uint8_t comma
 }
 
 void command_send(uint8_t command) {
-  debugarray_add(commandInterpreter.packet_id);
+  //debugarray_add(commandInterpreter.packet_id);
   serial_write(CI_START_CHAR);
   serial_write(commandInterpreter.packet_id);
   serial_write(1); //Length  
@@ -134,15 +137,8 @@ void command_send(uint8_t command) {
   serial_write(CI_END_CHAR);
 }
 
-void command_send_error() {
-  uint8_t data = ERROR_COMMAND;
-  data = data + 1;
-  command_send(data - 1);
-}
-
-
 void command_send_byte(uint8_t command, uint8_t data) {
-  debugarray_add(commandInterpreter.packet_id);
+  //debugarray_add(commandInterpreter.packet_id);
   serial_write(CI_START_CHAR);
   serial_write(commandInterpreter.packet_id);
   serial_write(2); //Length
@@ -151,8 +147,13 @@ void command_send_byte(uint8_t command, uint8_t data) {
   serial_write(commandInterpreter.packet_id ^ 2 ^ command ^ data);
   serial_write(CI_END_CHAR);
 }
+
+void command_send_rxerror(uint8_t rxerror) {
+  command_send_byte(ERROR_COMMAND, rxerror);
+}
+
 void command_send_array(uint8_t command, uint8_t* data, uint8_t data_length) {
-  debugarray_add(commandInterpreter.packet_id);
+  //debugarray_add(commandInterpreter.packet_id);
   serial_write(CI_START_CHAR);
   serial_write(commandInterpreter.packet_id);
   serial_write(1 + data_length); //Length
@@ -162,14 +163,6 @@ void command_send_array(uint8_t command, uint8_t* data, uint8_t data_length) {
     serial_write(data[i]);
   serial_write(calculateChksum(commandInterpreter.packet_id, 1 + data_length, data, command));
   serial_write(CI_END_CHAR);
-}
-
-void receive_error(uint8_t error) {
-
-  uint8_t data = error + 1;
-  data = data + 1;
-
-  serial_write(data);
 }
 
 uint8_t isChecksumValid(struct CommandInterpreter* ci) {
@@ -182,9 +175,8 @@ uint8_t isChecksumValid(struct CommandInterpreter* ci) {
 
 void command_receive_and_execute() {
   uint8_t execute = false;
-  uint8_t c;
   if (serial_has_bytes()) {
-    c = serial_read();
+    uint8_t c = serial_read();
     switch(commandInterpreter.state) {
       case CISTATE_WAITINGFOR_STARTCHAR:
         if (c == CI_START_CHAR)
@@ -199,7 +191,7 @@ void command_receive_and_execute() {
         else
           expected_packet_id = commandInterpreter.previous_packet_id + 1;
         if (c != expected_packet_id) {
-          receive_error(CIRXERROR_INVALIDPACKETID);
+          command_send_rxerror(CIRXERROR_INVALIDPACKETID);
           //TODO Aspettare il carattere di fine e fare l'escaping in mezzo
           commandInterpreter.state = CISTATE_WAITINGFOR_STARTCHAR;
         } else {
@@ -231,7 +223,7 @@ void command_receive_and_execute() {
           commandInterpreter.state = CISTATE_WAITINGFOR_ENDCHAR;
         }
         else {
-          receive_error(CIRXERROR_INVALIDCHECKSUM);
+          command_send_rxerror(CIRXERROR_INVALIDCHECKSUM);
           commandInterpreter.state = CISTATE_WAITINGFOR_STARTCHAR;
         }
         break;
@@ -240,7 +232,7 @@ void command_receive_and_execute() {
         if (c == CI_END_CHAR)
           ;
         else {
-          receive_error(CIRXERROR_INVALIDENDCHAR);
+          command_send_rxerror(CIRXERROR_INVALIDENDCHAR);
         }
         commandInterpreter.state = CISTATE_WAITINGFOR_STARTCHAR;
         break;
@@ -261,7 +253,7 @@ void command_receive_and_execute() {
       case SETSETTINGS_COMMAND:
         if (commandInterpreter.length != 8) { 
           //7 parameters plus the command
-          command_send_error();
+          command_send_rxerror(CIRXERROR_INVALIDARGUMENTS);
           break;
         }
         settings.pulse_microseconds = commandInterpreter.data[1];
@@ -275,7 +267,7 @@ void command_receive_and_execute() {
 
       case WAKEUP_COMMAND:
         if (commandInterpreter.length != 2) {
-          command_send_error();
+          command_send_rxerror(CIRXERROR_INVALIDARGUMENTS);
           break;
         }
         st_wake_up(commandInterpreter.data[1]);
@@ -284,7 +276,7 @@ void command_receive_and_execute() {
 
       case GOIDLE_COMMAND:
         if (commandInterpreter.length != 2) {
-          command_send_error();
+          command_send_rxerror(CIRXERROR_INVALIDARGUMENTS);
           break;
         }
         st_go_idle(commandInterpreter.data[1]);
@@ -293,7 +285,7 @@ void command_receive_and_execute() {
 
       case STOREPLANNERBLOCK_COMMAND:
         if (commandInterpreter.length != 19) {
-          command_send_error();
+          command_send_rxerror(CIRXERROR_INVALIDARGUMENTS);
           break;
         }
         uint8_t blockIndex = commandInterpreter.data[1];
@@ -309,7 +301,7 @@ void command_receive_and_execute() {
 
       case STORESEGMENTBLOCK_COMMAND:
         if (commandInterpreter.length != 8) { 
-          command_send_error();
+          command_send_rxerror(CIRXERROR_INVALIDARGUMENTS);
           break;
         }
         segment_t segment;
@@ -330,11 +322,11 @@ void command_receive_and_execute() {
         break;
 
       case UNDEFINED_COMMAND:
-        command_send_error();
+        command_send_rxerror(CIRXERROR_INVALIDARGUMENTS);
         break;
 
       default:
-        command_send_error();
+        command_send_rxerror(CIRXERROR_INVALIDARGUMENTS);
         break;
     }
     commandInterpreter.data[0] = UNDEFINED_COMMAND;
