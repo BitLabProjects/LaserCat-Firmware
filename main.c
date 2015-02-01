@@ -103,16 +103,19 @@ void interrupt int_low() {
 
   if (PIR1bits.RCIF) {
     serial_rx_interrupt();
+    return;
   }
 
   //Test PIE1bits.TXIE because TXIF is always set even when interrupts for usart are disable
   if (PIE1bits.TXIE && PIR1bits.TXIF) {
     serial_tx_interrupt();
+    return;
   }
 
   if (PIR1bits.TMR1IF) {
     PIR1bits.TMR1IF = 0;
     stepper_interrupt();
+    return;
   }
 
   //INTCONbits.GIE = 1;

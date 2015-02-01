@@ -218,12 +218,12 @@ uint8_t stepper_has_more_segment_buffer()
 // enabled. Startup init and limits call this function but shouldn't start the cycle.
 void st_wake_up(uint8_t setup_and_enable_motors) 
 {
-//TODO
-/*
-  // Enable stepper drivers.
-  if (bit_istrue(settings.flags,BITFLAG_INVERT_ST_ENABLE)) { STEPPERS_DISABLE_PORT |= (1<<STEPPERS_DISABLE_BIT); }
-  else { STEPPERS_DISABLE_PORT &= ~(1<<STEPPERS_DISABLE_BIT); }
-*/
+  //TODO
+  /*
+    // Enable stepper drivers.
+    if (bit_istrue(settings.flags,BITFLAG_INVERT_ST_ENABLE)) { STEPPERS_DISABLE_PORT |= (1<<STEPPERS_DISABLE_BIT); }
+    else { STEPPERS_DISABLE_PORT &= ~(1<<STEPPERS_DISABLE_BIT); }
+  */
   //if (sys.state & (STATE_CYCLE | STATE_HOMING)) {
   if (setup_and_enable_motors) {
     // Initialize stepper output bits
@@ -330,7 +330,7 @@ void st_go_idle(uint8_t delay_and_disable_steppers)
 void stepper_interrupt()
 {      
   // SPINDLE_ENABLE_PORT ^= 1<<SPINDLE_ENABLE_BIT; // Debug: Used to time ISR
-  if (busy) { return; } // The busy-flag is used to avoid reentering this interrupt
+  //if (busy) { return; } // The busy-flag is used to avoid reentering this interrupt
   
   // Set the direction pins a couple of nanoseconds before we step the steppers
   //TODO DIRECTION_PORT = (DIRECTION_PORT & ~DIRECTION_MASK) | (st.dir_outbits & DIRECTION_MASK);
@@ -351,7 +351,7 @@ void stepper_interrupt()
   //TCNT0 = st.step_pulse_time; // Reload Timer0 counter
   //TCCR0B = (1<<CS01); // Begin Timer0. Full speed, 1/8 prescaler
 
-  busy = true;
+  //busy = true;
   //sei(); // Re-enable interrupts to allow Stepper Port Reset Interrupt to fire on-time. 
          // NOTE: The remaining code in this ISR will finish before returning to main program.
     
@@ -379,6 +379,11 @@ void stepper_interrupt()
       if ( st.exec_block_index != st.exec_segment->st_block_index ) {
         st.exec_block_index = st.exec_segment->st_block_index;
         st.exec_block = &st_block_buffer[st.exec_block_index];
+
+        if (st.exec_block_index > 1) {
+          st.exec_block_index += 1;
+          st.exec_block_index -= 1;
+        }
         
         // Initialize Bresenham line and distance counters
         uint32_t local = st.exec_block->step_event_count;
@@ -425,7 +430,7 @@ void stepper_interrupt()
       // Segment buffer empty. Shutdown.
       //st_go_idle(false);
       //bit_true_atomic(sys.execute,EXEC_CYCLE_STOP); // Flag main program for cycle end
-      busy = false;
+      //busy = false;
       return; // Nothing to do but exit.
     }
   }
@@ -487,7 +492,7 @@ void stepper_interrupt()
   }
 
   st.step_outbits ^= step_port_invert_mask;  // Apply step port invert mask    
-  busy = false;
+  //busy = false;
 // SPINDLE_ENABLE_PORT ^= 1<<SPINDLE_ENABLE_BIT; // Debug: Used to time ISR
 }
 
