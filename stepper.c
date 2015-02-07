@@ -244,7 +244,8 @@ void st_wake_up(uint8_t setup_and_enable_motors)
     // Enable Stepper Driver Interrupt
     //TODO
     //TIMSK1 |= (1<<OCIE1A);
-    T1CONbits.TMR1ON = 1;
+    TMR1ON_bit = 1;
+    //T1CONbits.TMR1ON = 1;
   }
 }
 
@@ -252,21 +253,22 @@ void st_wake_up(uint8_t setup_and_enable_motors)
 // Stepper shutdown
 void st_go_idle(uint8_t delay_and_disable_steppers) 
 {
-
+  bool pin_state;
+  
   // Disable Stepper Driver Interrupt. Allow Stepper Port Reset Interrupt to finish, if active.
   //TODO
   //TIMSK1 &= ~(1<<OCIE1A); // Disable Timer1 interrupt
   //TCCR1B = (TCCR1B & ~((1<<CS12) | (1<<CS11))) | (1<<CS10); // Reset clock to no prescaling.
-  T1CONbits.TMR1ON = 0;
+  TMR1ON_bit = 0;
   busy = false;
   
   // Set stepper driver idle state, disabled or enabled, depending on settings and circumstances.
-  bool pin_state = false; // Keep enabled.
+  pin_state = false; // Keep enabled.
   //if (((settings.stepper_idle_lock_time != 0xff) || bit_istrue(sys.execute,EXEC_ALARM)) && sys.state != STATE_HOMING) {
   if (delay_and_disable_steppers) {
     // Force stepper dwell to lock axes for a defined amount of time to ensure the axes come to a complete
     // stop and not drift from residual inertial forces at the end of the last movement.
-    delay_ms(settings.stepper_idle_lock_time);
+    //TODO delay_ms(settings.stepper_idle_lock_time);
     pin_state = true; // Override. Disable steppers.
   }
   if (bit_istrue(settings.flags,BITFLAG_INVERT_ST_ENABLE)) { pin_state = !pin_state; } // Apply pin invert.
@@ -329,6 +331,9 @@ void st_go_idle(uint8_t delay_and_disable_steppers)
 //ISR(TIMER1_COMPA_vect)
 void stepper_interrupt()
 {      
+  uint32_t local;
+  uint32_t stepsBefore;
+  uint16_t TMR1;
   // SPINDLE_ENABLE_PORT ^= 1<<SPINDLE_ENABLE_BIT; // Debug: Used to time ISR
   //if (busy) { return; } // The busy-flag is used to avoid reentering this interrupt
   
@@ -386,7 +391,7 @@ void stepper_interrupt()
         }
         
         // Initialize Bresenham line and distance counters
-        uint32_t local = st.exec_block->step_event_count;
+        local = st.exec_block->step_event_count;
         st.counter_x = (local >> 1);
         st.counter_y = st.counter_x;
         st.counter_z = st.counter_x;        
@@ -408,7 +413,6 @@ void stepper_interrupt()
 
         //Pluto---------------------
 
-        uint32_t stepsBefore; 
         stepsBefore = st.exec_block->steps[X_AXIS];
         st.steps[X_AXIS] = stepsBefore >> amass_level;
 
@@ -438,6 +442,8 @@ void stepper_interrupt()
   //SB!Moved the period set because we don't have a period register, and must initialize the counter to max - desired period
   //TMR1 = 0xFFFF - (st.exec_segment->cycles_per_tick - TMR1);
   TMR1 = 0xF000;
+  TMR1H = (TMR1 >> 8);
+  TMR1L = TMR1 & 0xFF;
   //TMR1 = 1;
     
   // Check probing state.
@@ -564,12 +570,12 @@ void stepper_init()
   STEPPERS_DISABLE_DDR |= 1<<STEPPERS_DISABLE_BIT;
   DIRECTION_DDR |= DIRECTION_MASK;
 
-  T1CONbits.TMR1ON = 0; //Turn timer off
-  T1CONbits.T1CKPS0 = 0; //Prescaler 1:1
-  T1CONbits.T1CKPS1 = 0;
-  T1CONbits.TMR1CS = 0; //Fosc/4, uses the CPU clock source
-  PIR1bits.TMR1IF = 0;
-  PIE1bits.TMR1IE = 1;
+  TMR1ON_bit = 0; //Turn timer off
+  T1CKPS0_bit = 0; //Prescaler 1:1
+  T1CKPS1_bit = 0;
+  TMR1CS_bit = 0; //Fosc/4, uses the CPU clock source
+  TMR1IF_bit = 0;
+  TMR1IE_bit = 1;
 
 //TODO
 /*
@@ -591,4 +597,3 @@ void stepper_init()
   #endif
 */
 }
-

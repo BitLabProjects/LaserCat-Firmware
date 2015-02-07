@@ -57,7 +57,7 @@ ISR(PINOUT_INT_vect)
     } 
   }
 }
-*/
+
 
 // Executes user startup script, if stored.
 void system_execute_startup(char *line) 
@@ -202,3 +202,4 @@ uint8_t system_execute_line(char *line)
   }
   return(STATUS_OK); // If '$' command makes it to here, then everything's ok.
 }
+*/

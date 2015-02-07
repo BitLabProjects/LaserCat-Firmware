@@ -22,7 +22,7 @@
 #define system_h
 
 // Define system header files and standard libraries used by Grbl
-#include <p18f4550.h>
+//#include <p18f4550.h>
 /*#include <avr/io.h>
 #include <avr/pgmspace.h>
 #include <avr/interrupt.h>
@@ -40,6 +40,10 @@
 #include "defaults.h"
 #include "cpu_map.h"
 #include "nuts_bolts.h"
+
+#ifndef NULL
+#define NULL 0
+#endif
 
 
 // Define system executor bit map. Used internally by runtime protocol as runtime command flags, 

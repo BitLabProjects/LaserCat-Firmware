@@ -31,12 +31,12 @@
 //#include "gcode.h"
 //#include "planner.h"
 #include "stepper.h"
-#include "spindle_control.h"
-#include "coolant_control.h"
+//#include "spindle_control.h"
+//#include "coolant_control.h"
 //#include "motion_control.h"
-#include "limits.h"
-#include "probe.h"
-#include "report.h"
+//#include "limits.h"
+//#include "probe.h"
+//#include "report.h"
 
 
 // Declare system global variable structure
@@ -59,7 +59,7 @@ int main(void)
   
   memset(&sys, 0, sizeof(sys));  // Clear all system variables
   sys.abort = true;   // Set abort to complete initialization
-  sei(); // Enable interrupts
+  //sei(); // Enable interrupts
 
   // Check for power-up and set system alarm if homing is enabled to force homing cycle
   // by setting Grbl's alarm state. Alarm locks out all g-code commands, including the
@@ -95,25 +95,25 @@ int main(void)
     protocol_main_loop();
     
   }
-  //return 0;   /* Never reached */
+  return 0;   /* Never reached */
 }
 
-void interrupt int_low() {
+void interrupt_low() {
   //INTCONbits.GIE = 0;
 
-  if (PIR1bits.RCIF) {
+  if (RCIF_bit) {
     serial_rx_interrupt();
     return;
   }
 
   //Test PIE1bits.TXIE because TXIF is always set even when interrupts for usart are disable
-  if (PIE1bits.TXIE && PIR1bits.TXIF) {
+  if (TXIE_bit && TXIF_bit) {
     serial_tx_interrupt();
     return;
   }
 
-  if (PIR1bits.TMR1IF) {
-    PIR1bits.TMR1IF = 0;
+  if (TMR1IF_bit) {
+    TMR1IF_bit = 0;
     stepper_interrupt();
     return;
   }

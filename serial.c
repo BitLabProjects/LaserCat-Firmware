@@ -82,15 +82,15 @@ void serial_init()
   // enable rx and tx
   UCSR0B |= 1<<RXEN0;
   UCSR0B |= 1<<TXEN0;
-	
+        
   // enable interrupt on complete reception of a byte
   UCSR0B |= 1<<RXCIE0;
-	  
+          
   // defaults to 8-bit, no parity, 1 stop bit
 */
 
-  TXSTAbits.BRGH = 1; //BRG ad alta velocità
-  BAUDCONbits.BRG16 = 1;  //16bit per il SPBRG
+  BRGH_bit = 1; //BRG ad alta velocità
+  BRG16_bit = 1;  //16bit per il SPBRG
   //SPBRG = 103; // 1200 baud/sec a 4MHz
   
   SPBRG = 103; // 115000 baud/sec a 48MHz
@@ -102,17 +102,17 @@ void serial_init()
   
   //SPBRG = 13; // 115000 baud/sec a 8MHz
 
-  TXSTAbits.SYNC = 0;
-  TXSTAbits.TXEN = 1;
+  SYNC_bit = 0;
+  TXEN_bit = 1;
 
-  RCSTAbits.SPEN = 1;
-  RCSTAbits.CREN = 1;
+  SPEN_bit = 1;
+  CREN_bit = 1;
 
 #ifdef USE_SERIAL_INTERRUPTS
-  INTCONbits.GIE = 1;
-  INTCONbits.PEIE = 1;
-  PIR1bits.RCIF = 0;
-  PIE1bits.RCIE = 1;
+  GIE_bit = 1;
+  PEIE_bit = 1;
+  RCIF_bit = 0;
+  RCIE_bit = 1;
 #endif
 
   serial_rx_buffer_head = 0;
@@ -123,12 +123,12 @@ void serial_init()
 
 // Writes one byte to the TX serial buffer. Called by main program.
 // TODO: Check if we can speed this up for writing strings, rather than single bytes.
-void serial_write(uint8_t data) {
+void serial_write(uint8_t value) {
 #ifndef USE_SERIAL_INTERRUPTS
   while(!TXIF)
     continue;
 
-  TXREG = data;
+  TXREG = value;
 #else
   // Calculate next head
   uint8_t next_head = serial_tx_buffer_head + 1;
@@ -141,11 +141,11 @@ void serial_write(uint8_t data) {
   }
 
   // Store data and advance head
-  serial_tx_buffer[serial_tx_buffer_head] = data;
+  serial_tx_buffer[serial_tx_buffer_head] = value;
   serial_tx_buffer_head = next_head;
   
   // Enable Data Register Empty Interrupt to make sure tx-streaming is running
-  PIE1bits.TXIE = 1;
+  TXIE_bit = 1;
 #endif
 }
 
@@ -154,7 +154,7 @@ void serial_tx_interrupt()
 {
   uint8_t tail = serial_tx_buffer_tail; // Temporary serial_tx_buffer_tail (to optimize for volatile)
   
-  // Send a byte from the buffer	
+  // Send a byte from the buffer        
   TXREG = serial_tx_buffer[tail];
 
   // Update tail position
@@ -164,7 +164,7 @@ void serial_tx_interrupt()
   serial_tx_buffer_tail = tail;
   
   // Turn off Data Register Empty Interrupt to stop tx-streaming if this concludes the transfer
-  if (tail == serial_tx_buffer_head) { PIE1bits.TXIE = 0; }
+  if (tail == serial_tx_buffer_head) { TXIE_bit = 0; }
 }
 
 // Fetches the first byte in the serial read buffer. Called by main program.
@@ -176,25 +176,27 @@ uint8_t serial_read()
   RCIF=0;
   return RCREG;
 #else
-
-  uint8_t tail = serial_rx_buffer_tail; // Temporary serial_rx_buffer_tail (to optimize for volatile)
+  uint8_t tail;
+  uint8_t value;
+  
+  tail = serial_rx_buffer_tail; // Temporary serial_rx_buffer_tail (to optimize for volatile)
   if (serial_rx_buffer_head == tail) {
     return SERIAL_NO_DATA;
   } else {
-    uint8_t data = serial_rx_buffer[tail];
+    value = serial_rx_buffer[tail];
     
     tail++;
     if (tail == RX_BUFFER_SIZE) { tail = 0; }
     serial_rx_buffer_tail = tail;
     
-    return data;
+    return value;
   }
 #endif
 }
 
 void serial_rx_interrupt()
 {
-  uint8_t data = RCREG;
+  uint8_t value = RCREG;
   uint8_t next_head;
   
   next_head = serial_rx_buffer_head + 1;
@@ -202,12 +204,12 @@ void serial_rx_interrupt()
 
   // Write data to buffer unless it is full.
   if (next_head != serial_rx_buffer_tail) {
-    serial_rx_buffer[serial_rx_buffer_head] = data;
+    serial_rx_buffer[serial_rx_buffer_head] = value;
     serial_rx_buffer_head = next_head;        
   } else {
     //Huston we have a problem!
     //TODO: else alarm on overflow?
-    data = data + 1;
+    value = value + 1;
     return;
   }
 }

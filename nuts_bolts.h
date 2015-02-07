@@ -50,9 +50,6 @@
 #define max(a,b) (((a) > (b)) ? (a) : (b))
 #define min(a,b) (((a) < (b)) ? (a) : (b))
 
-void cli();
-void sei();
-
 // Bit field and masking macros
 #define bit(n) (1 << n) 
 #define bit_true_atomic(x,mask) {uint8_t sreg = STATUS; cli(); (x) |= (mask); STATUS = sreg; sei(); }

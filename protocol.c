@@ -97,7 +97,7 @@ static void protocol_execute_line(char *line)
 struct ProtocolMessage {
   uint8_t packet_id;
   uint8_t length;
-  uint8_t data[20];
+  uint8_t data_bytes[20];
   uint8_t checksum;
 };
 
@@ -121,19 +121,20 @@ void debugarray_add(uint8_t data) {
 }
 */
 
-uint8_t calculateChksum(uint8_t id, uint8_t length, uint8_t* data, uint8_t command){
+uint8_t calculateChksum(uint8_t id, uint8_t length, uint8_t* data_bytes, uint8_t command){
   uint8_t chksum = 0;
+  uint8_t i;
   chksum ^= id;
   chksum ^= length;
   chksum ^= command;
-  for(uint8_t i = 0; i < length; i++){
-    chksum ^= data[i];
+  for(i = 0; i < length; i++){
+    chksum ^= data_bytes[i];
   }
   return chksum;
 }
 
 uint8_t calculateChksumMsg(struct ProtocolMessage* pm) {
-  return calculateChksum(pm->packet_id, pm->length, pm->data, 0);
+  return calculateChksum(pm->packet_id, pm->length, pm->data_bytes, 0);
 }
 
 void command_send_do() {
@@ -142,10 +143,10 @@ void command_send_do() {
   serial_write(txMessage.packet_id);
   serial_write(txMessage.length);
   for(i=0; i<txMessage.length; i++)
-    serial_write(txMessage.data[i]);
+    serial_write(txMessage.data_bytes[i]);
   serial_write(txMessage.checksum);
   serial_write(CI_END_CHAR);
-};
+}
 
 //uint8_t cmdcount = 0;
 void command_send(uint8_t command) {
@@ -157,16 +158,16 @@ void command_send(uint8_t command) {
   //}
   txMessage.packet_id = rxMessage.packet_id;
   txMessage.length = 1;
-  txMessage.data[0] = command;
+  txMessage.data_bytes[0] = command;
   calculateChksumMsg(&txMessage);
   command_send_do();
 }
 
-void command_send_byte(uint8_t command, uint8_t data) {
+void command_send_byte(uint8_t command, uint8_t data_bytes) {
   txMessage.packet_id = rxMessage.packet_id;
   txMessage.length = 2;
-  txMessage.data[0] = command;
-  txMessage.data[1] = data;
+  txMessage.data_bytes[0] = command;
+  txMessage.data_bytes[1] = data_bytes;
   calculateChksumMsg(&txMessage);
   command_send_do();
 }
@@ -175,19 +176,19 @@ void command_send_rxerror(uint8_t rxerror) {
   command_send_byte(ERROR_COMMAND, rxerror);
 }
 
-void command_send_array(uint8_t command, uint8_t* data, uint8_t data_length) {
+void command_send_array(uint8_t command, uint8_t* data_bytes, uint8_t data_length) {
+  uint8_t i;
   txMessage.packet_id = rxMessage.packet_id;
   txMessage.length = 1 + data_length;
-  txMessage.data[0] = command;
-  uint8_t i;
+  txMessage.data_bytes[0] = command;
   for(i=0; i<data_length; i++)
-    txMessage.data[1 + i] = data[i];
+    txMessage.data_bytes[1 + i] = data_bytes[i];
   calculateChksumMsg(&txMessage);
   command_send_do();
 }
 
 uint8_t isChecksumValid(struct ProtocolMessage* ci) {
-  if (calculateChksum(ci->packet_id, ci->length, ci->data, 0) == ci->checksum){
+  if (calculateChksum(ci->packet_id, ci->length, ci->data_bytes, 0) == ci->checksum){
     return true;
   } else{
     return false;
@@ -195,6 +196,13 @@ uint8_t isChecksumValid(struct ProtocolMessage* ci) {
 }
 
 void command_receive_and_execute() {
+  uint8_t blockIndex;
+  segment_t segment;
+  st_block_t block;
+  int i;
+  uint8_t* dst_ptr;
+  uint8_t* src_ptr;
+  
   uint8_t execute = false;
   if (serial_has_bytes()) {
     uint8_t c = serial_read();
@@ -216,7 +224,7 @@ void command_receive_and_execute() {
         break;
 
       case CISTATE_READINGDATA:
-        rxMessage.data[commandInterpreter.data_count] = c;
+        rxMessage.data_bytes[commandInterpreter.data_count] = c;
         commandInterpreter.data_count += 1;
         if (commandInterpreter.data_count == rxMessage.length) {
             commandInterpreter.state = CISTATE_WAITINGFOR_CHECKSUM;
@@ -263,7 +271,7 @@ void command_receive_and_execute() {
 
     commandInterpreter.previous_packet_id = rxMessage.packet_id;
 
-    switch (rxMessage.data[0]) {
+    switch (rxMessage.data_bytes[0]) {
       case INIT_COMMAND:
         //Already done on startup stepper_init();
         command_send(OK_COMMAND);
@@ -280,12 +288,12 @@ void command_receive_and_execute() {
           command_send_rxerror(CIRXERROR_INVALIDARGUMENTS);
           break;
         }
-        settings.pulse_microseconds = rxMessage.data[1];
-        settings.step_invert_mask = rxMessage.data[2];
-        settings.dir_invert_mask = rxMessage.data[3];
-        settings.stepper_idle_lock_time = rxMessage.data[4];
-        settings.flags = rxMessage.data[5];
-        stepper_set_settings(rxMessage.data[6], rxMessage.data[7]);
+        settings.pulse_microseconds = rxMessage.data_bytes[1];
+        settings.step_invert_mask = rxMessage.data_bytes[2];
+        settings.dir_invert_mask = rxMessage.data_bytes[3];
+        settings.stepper_idle_lock_time = rxMessage.data_bytes[4];
+        settings.flags = rxMessage.data_bytes[5];
+        stepper_set_settings(rxMessage.data_bytes[6], rxMessage.data_bytes[7]);
         command_send(OK_COMMAND);
         break;
 
@@ -294,7 +302,7 @@ void command_receive_and_execute() {
           command_send_rxerror(CIRXERROR_INVALIDARGUMENTS);
           break;
         }
-        st_wake_up(rxMessage.data[1]);
+        st_wake_up(rxMessage.data_bytes[1]);
         command_send(OK_COMMAND);
         break;
 
@@ -303,7 +311,7 @@ void command_receive_and_execute() {
           command_send_rxerror(CIRXERROR_INVALIDARGUMENTS);
           break;
         }
-        st_go_idle(rxMessage.data[1]);
+        st_go_idle(rxMessage.data_bytes[1]);
         command_send(OK_COMMAND);
         break;
 
@@ -312,11 +320,9 @@ void command_receive_and_execute() {
           command_send_rxerror(CIRXERROR_INVALIDARGUMENTS);
           break;
         }
-        uint8_t blockIndex = rxMessage.data[1];
-        st_block_t block;
-        int i;
-        uint8_t* dst_ptr = (uint8_t*)&block;
-        uint8_t* src_ptr = (uint8_t*)&rxMessage.data[2];
+        blockIndex = rxMessage.data_bytes[1];
+        dst_ptr = (uint8_t*)&block;
+        src_ptr = (uint8_t*)&rxMessage.data_bytes[2];
         for(i=0; i<17; i++)
           *(dst_ptr++) = *(src_ptr++);
         stepper_store_planner_block(blockIndex, &block);
@@ -328,9 +334,8 @@ void command_receive_and_execute() {
           command_send_rxerror(CIRXERROR_INVALIDARGUMENTS);
           break;
         }
-        segment_t segment;
-        uint8_t* dst_ptr = (uint8_t*)&segment;
-        uint8_t* src_ptr = (uint8_t*)&rxMessage.data[1];
+        dst_ptr = (uint8_t*)&segment;
+        src_ptr = (uint8_t*)&rxMessage.data_bytes[1];
         for(i=0; i<7; i++)
           *(dst_ptr++) = *(src_ptr++);
         stepper_store_segment_block(&segment);
@@ -353,7 +358,7 @@ void command_receive_and_execute() {
         command_send_rxerror(CIRXERROR_INVALIDARGUMENTS);
         break;
     }
-    rxMessage.data[0] = UNDEFINED_COMMAND;
+    rxMessage.data_bytes[0] = UNDEFINED_COMMAND;
   }
 }
 
@@ -375,6 +380,7 @@ void protocol_main_loop()
     command_receive_and_execute();
   }
 
+/*
   // Check for and report alarm state after a reset, error, or an initial power up.
   if (sys.state == STATE_ALARM) {
     report_feedback_message(MESSAGE_ALARM_LOCK); 
@@ -461,11 +467,11 @@ void protocol_main_loop()
     protocol_execute_runtime();  // Runtime command check point.
     if (sys.abort) { return; } // Bail to main() program loop to reset system.
               
-  }
+  }*/
   
   return; /* Never reached */
 }
-
+/*
 
 // Executes run-time commands, when required. This is called from various check points in the main
 // program, primarily where there may be a while loop waiting for a buffer to clear space or any
@@ -574,14 +580,14 @@ void protocol_execute_runtime()
   //TODO if (sys.state & (STATE_CYCLE | STATE_HOLD | STATE_HOMING)) { st_prep_buffer(); }  
   
 }  
-
-
+*/
+/*
 // Block until all buffered steps are executed or in a cycle state. Works with feed hold
 // during a synchronize call, if it should happen. Also, waits for clean cycle end.
 void protocol_buffer_synchronize()
 {
 //TODO 
-/*
+
   // If system is queued, ensure cycle resumes if the auto start flag is present.
   protocol_auto_cycle_start();
   // Check and set auto start to resume cycle after synchronize and caller completes.
@@ -590,9 +596,9 @@ void protocol_buffer_synchronize()
     protocol_execute_runtime();   // Check and execute run-time commands
     if (sys.abort) { return; } // Check for system abort
   }
-*/    
+   
 }
-
+*/ 
 
 // Auto-cycle start has two purposes: 1. Resumes a plan_synchronize() call from a function that
 // requires the planner buffer to empty (spindle enable, dwell, etc.) 2. As a user setting that 
@@ -604,4 +610,4 @@ void protocol_buffer_synchronize()
 // NOTE: This function is called from the main loop and mc_line() only and executes when one of
 // two conditions exist respectively: There are no more blocks sent (i.e. streaming is finished, 
 // single commands), or the planner buffer is full and ready to go.
-void protocol_auto_cycle_start() { if (sys.auto_start) { bit_true_atomic(sys.execute, EXEC_CYCLE_START); } } 
+//void protocol_auto_cycle_start() { if (sys.auto_start) { bit_true_atomic(sys.execute, EXEC_CYCLE_START); } } 

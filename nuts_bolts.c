@@ -42,12 +42,18 @@ uint8_t read_float(char *line, uint8_t *char_counter, float *float_ptr)
 {
   char *ptr = line + *char_counter;
   unsigned char c;
+  bool isnegative = false;
+  uint32_t intval = 0;
+  int8_t exp = 0;
+  uint8_t ndigit = 0;
+  bool isdecimal = false;
+  float fval;
     
   // Grab first character and increment pointer. No spaces assumed in line.
   c = *ptr++;
   
   // Capture initial positive/minus character
-  bool isnegative = false;
+
   if (c == '-') {
     isnegative = true;
     c = *ptr++;
@@ -56,10 +62,7 @@ uint8_t read_float(char *line, uint8_t *char_counter, float *float_ptr)
   }
   
   // Extract number into fast integer. Track decimal in terms of exponent value.
-  uint32_t intval = 0;
-  int8_t exp = 0;
-  uint8_t ndigit = 0;
-  bool isdecimal = false;
+
   while(1) {
     c -= '0';
     if (c <= 9) {
@@ -82,7 +85,6 @@ uint8_t read_float(char *line, uint8_t *char_counter, float *float_ptr)
   if (!ndigit) { return(false); };
   
   // Convert integer into floating point.
-  float fval;
   fval = (float)intval;
   
   // Apply decimal. Should perform no more than two floating point multiplications for the
@@ -156,10 +158,3 @@ void delay_us(uint32_t us)
 
 // Simple hypotenuse computation function.
 float hypot_f(float x, float y) { return(sqrt(x*x + y*y)); }
-
-void cli() {
-  INTCONbits.GIE = 0;
-}
-void sei() {
-  INTCONbits.GIE = 1;
-}

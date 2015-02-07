@@ -34,7 +34,7 @@
 
 settings_t settings;
 
-
+/*
 // Method to store startup lines into EEPROM
 void settings_store_startup_line(uint8_t n, char *line)
 {
@@ -55,7 +55,7 @@ void settings_write_coord_data(uint8_t coord_select, float *coord_data)
 {  
   uint32_t addr = coord_select*(sizeof(float)*N_AXIS+1) + EEPROM_ADDR_PARAMETERS;
   memcpy_to_eeprom_with_checksum(addr,(char*)coord_data, sizeof(float)*N_AXIS);
-}  
+}
 
 
 // Method to store Grbl global settings struct and version number into EEPROM
@@ -310,7 +310,7 @@ void settings_init() {
   // NOTE: Startup lines are checked and executed by protocol_main_loop at the end of initialization.
   // TODO: Build info should be checked here, but will wait until v1.0 to address this. Ok for now.
 }
-
+*/
 
 // Returns step pin mask according to Grbl internal axis indexing.
 uint8_t get_step_pin_mask(uint8_t axis_idx)
