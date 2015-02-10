@@ -334,6 +334,7 @@ void stepper_interrupt()
   uint32_t local;
   uint32_t stepsBefore;
   uint16_t TMR1;
+  uint8_t amass_level;
   // SPINDLE_ENABLE_PORT ^= 1<<SPINDLE_ENABLE_BIT; // Debug: Used to time ISR
   //if (busy) { return; } // The busy-flag is used to avoid reentering this interrupt
   
@@ -401,18 +402,18 @@ void stepper_interrupt()
 
       #ifdef ADAPTIVE_MULTI_AXIS_STEP_SMOOTHING
         // With AMASS enabled, adjust Bresenham axis increment counters according to AMASS level.
-        uint8_t amass_level = st.exec_segment->amass_level;
+        amass_level = st.exec_segment->amass_level;
         //<Magic>
         //SB!This code does not shift property
         
         //Topolino---------------------
 
         st.steps[X_AXIS] = st.exec_block->steps[X_AXIS] >> amass_level;
-        //st.steps[Y_AXIS] = st.exec_block->steps[Y_AXIS] >> amass_level;
-        //st.steps[Z_AXIS] = st.exec_block->steps[Z_AXIS] >> amass_level;
+        st.steps[Y_AXIS] = st.exec_block->steps[Y_AXIS] >> amass_level;
+        st.steps[Z_AXIS] = st.exec_block->steps[Z_AXIS] >> amass_level;
 
         //Pluto---------------------
-
+         /*
         stepsBefore = st.exec_block->steps[X_AXIS];
         st.steps[X_AXIS] = stepsBefore >> amass_level;
 
@@ -424,7 +425,7 @@ void stepper_interrupt()
         stepsBefore = st.exec_block->steps[Z_AXIS];
         st.steps[Z_AXIS] = stepsBefore >> amass_level;
         //</Magic>
-
+           */
         
         //st.steps[Z_AXIS] = st.exec_block->steps[Z_AXIS] >> st.exec_segment->amass_level;
         //st.steps[Z_AXIS] = (st.exec_block->steps[Z_AXIS]) >> (st.exec_segment->amass_level);

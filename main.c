@@ -52,7 +52,7 @@ int main(void)
     serial_write('B');
     serial_write('C');
   }*/
-
+  
   //settings_init(); // Load grbl settings from EEPROM
   stepper_init();  // Configure stepper pins and interrupt timers
   system_init();   // Configure pinout pins and pin-change interrupt
@@ -71,7 +71,7 @@ int main(void)
   #ifdef HOMING_INIT_LOCK
     if (bit_istrue(settings.flags,BITFLAG_HOMING_ENABLE)) { sys.state = STATE_ALARM; }
   #endif
-  
+
   // Grbl initialization loop upon power-up or a system abort. For the latter, all processes
   // will return to this loop to be cleanly re-initialized.
   for(;;) {
@@ -85,7 +85,7 @@ int main(void)
     //coolant_init();
     //limits_init(); 
     //probe_init();
-    //st_reset(); // Clear stepper subsystem variables.
+    st_reset(); // Clear stepper subsystem variables.
 
     // Reset system variables.
     sys.abort = false;
@@ -98,7 +98,7 @@ int main(void)
   return 0;   /* Never reached */
 }
 
-void interrupt_low() {
+void Interrupt() {
   //INTCONbits.GIE = 0;
 
   if (RCIF_bit) {

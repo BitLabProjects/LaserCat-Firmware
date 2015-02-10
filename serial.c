@@ -42,7 +42,8 @@ volatile uint8_t serial_tx_buffer_tail;
 // Returns the number of bytes used in the RX serial buffer.
 uint8_t serial_get_rx_buffer_count()
 {
-  uint8_t rtail = serial_rx_buffer_tail; // Copy to limit multiple calls to volatile
+  uint8_t rtail;
+  rtail = serial_rx_buffer_tail; // Copy to limit multiple calls to volatile
   if (serial_rx_buffer_head >= rtail) { return(serial_rx_buffer_head-rtail); }
   return (RX_BUFFER_SIZE - (rtail-serial_rx_buffer_head));
 }
@@ -57,7 +58,8 @@ uint8_t serial_has_bytes() {
 // NOTE: Not used except for debugging and ensuring no TX bottlenecks.
 uint8_t serial_get_tx_buffer_count()
 {
-  uint8_t ttail = serial_tx_buffer_tail; // Copy to limit multiple calls to volatile
+  uint8_t ttail;
+  ttail = serial_tx_buffer_tail; // Copy to limit multiple calls to volatile
   if (serial_tx_buffer_head >= ttail) { return(serial_tx_buffer_head-ttail); }
   return (TX_BUFFER_SIZE - (ttail-serial_tx_buffer_head));
 }
@@ -125,13 +127,14 @@ void serial_init()
 // TODO: Check if we can speed this up for writing strings, rather than single bytes.
 void serial_write(uint8_t value) {
 #ifndef USE_SERIAL_INTERRUPTS
-  while(!TXIF)
+  while(!TXIF_bit)
     continue;
 
   TXREG = value;
 #else
   // Calculate next head
-  uint8_t next_head = serial_tx_buffer_head + 1;
+  uint8_t next_head;
+  next_head = serial_tx_buffer_head + 1;
   if (next_head == TX_BUFFER_SIZE) { next_head = 0; }
 
   // Wait until there is space in the buffer
@@ -152,7 +155,8 @@ void serial_write(uint8_t value) {
 // Data Register Empty Interrupt handler
 void serial_tx_interrupt()
 {
-  uint8_t tail = serial_tx_buffer_tail; // Temporary serial_tx_buffer_tail (to optimize for volatile)
+  uint8_t tail;
+  tail = serial_tx_buffer_tail; // Temporary serial_tx_buffer_tail (to optimize for volatile)
   
   // Send a byte from the buffer        
   TXREG = serial_tx_buffer[tail];
@@ -171,9 +175,9 @@ void serial_tx_interrupt()
 uint8_t serial_read()
 {
 #ifndef USE_SERIAL_INTERRUPTS
-  while(!RCIF)
+  while(!RCIF_bit)
     continue;
-  RCIF=0;
+  RCIF_bit=0;
   return RCREG;
 #else
   uint8_t tail;
@@ -196,8 +200,9 @@ uint8_t serial_read()
 
 void serial_rx_interrupt()
 {
-  uint8_t value = RCREG;
+  uint8_t value;
   uint8_t next_head;
+  value = RCREG;
   
   next_head = serial_rx_buffer_head + 1;
   if (next_head == RX_BUFFER_SIZE) { next_head = 0; }

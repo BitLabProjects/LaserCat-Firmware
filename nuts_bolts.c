@@ -40,7 +40,7 @@
 // NOTE: Thanks to Radu-Eosif Mihailescu for identifying the issues with using strtod().
 uint8_t read_float(char *line, uint8_t *char_counter, float *float_ptr)                  
 {
-  char *ptr = line + *char_counter;
+  char *ptr;
   unsigned char c;
   bool isnegative = false;
   uint32_t intval = 0;
@@ -48,6 +48,9 @@ uint8_t read_float(char *line, uint8_t *char_counter, float *float_ptr)
   uint8_t ndigit = 0;
   bool isdecimal = false;
   float fval;
+  
+  ptr = line + *char_counter;
+
     
   // Grab first character and increment pointer. No spaces assumed in line.
   c = *ptr++;
