@@ -29,10 +29,10 @@
 
 
 #ifndef RX_BUFFER_SIZE
-  #define RX_BUFFER_SIZE 128
+  #define RX_BUFFER_SIZE 16
 #endif
 #ifndef TX_BUFFER_SIZE
-  #define TX_BUFFER_SIZE 128
+  #define TX_BUFFER_SIZE 16
 #endif
 
 #define SERIAL_NO_DATA 0xff

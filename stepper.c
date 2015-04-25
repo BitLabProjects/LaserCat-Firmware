@@ -30,6 +30,7 @@
 #include "settings.h"
 //#include "planner.h"
 #include "probe.h"
+#include "motor.h"
 
 
 // Some useful constants.
@@ -228,7 +229,7 @@ void st_wake_up(uint8_t setup_and_enable_motors)
   if (setup_and_enable_motors) {
     // Initialize stepper output bits
     st.dir_outbits = dir_port_invert_mask; 
-    st.step_outbits = step_port_invert_mask;
+    //st.step_outbits = step_port_invert_mask;
     
     // Initialize step pulse timing from settings. Here to ensure updating after re-writing.
     #ifdef STEP_PULSE_DELAY
@@ -351,6 +352,7 @@ void stepper_interrupt()
   #endif  
 */
 
+
   // Enable step pulse reset timer so that The Stepper Port Reset Interrupt can reset the signal after
   // exactly settings.pulse_microseconds microseconds, independent of the main Timer1 prescaler.
   //TODO
@@ -442,9 +444,10 @@ void stepper_interrupt()
 
   //SB!Moved the period set because we don't have a period register, and must initialize the counter to max - desired period
   //TMR1 = 0xFFFF - (st.exec_segment->cycles_per_tick - TMR1);
-  TMR1 = 0xF000;
-  TMR1H = (TMR1 >> 8);
-  TMR1L = TMR1 & 0xFF;
+  //TMR1 = 0xFFFF;// - (((st.exec_segment->cycles_per_tick)>>4) - TMR1);
+  //TMR1 = 0xF000;
+  //TMR1H = (TMR1 >> 8);
+  //TMR1L = TMR1 & 0xFF;
   //TMR1 = 1;
     
   // Check probing state.
@@ -465,6 +468,8 @@ void stepper_interrupt()
     if (st.exec_block->direction_bits & (1<<X_DIRECTION_BIT)) { sys.position[X_AXIS]--; }
     else { sys.position[X_AXIS]++; }
   }
+  
+
   #ifdef ADAPTIVE_MULTI_AXIS_STEP_SMOOTHING
     st.counter_y += st.steps[Y_AXIS];
   #else
@@ -486,10 +491,11 @@ void stepper_interrupt()
     st.counter_z -= st.exec_block->step_event_count;
     if (st.exec_block->direction_bits & (1<<Z_DIRECTION_BIT)) { sys.position[Z_AXIS]--; }
     else { sys.position[Z_AXIS]++; }
-  }  
+  }
 
+  
   // During a homing cycle, lock out and prevent desired axes from moving.
-  if (sys.state == STATE_HOMING) { st.step_outbits &= sys.homing_axis_lock; }   
+  //if (sys.state == STATE_HOMING) { st.step_outbits &= sys.homing_axis_lock; }
 
   st.step_count--; // Decrement step events count 
   if (st.step_count == 0) {
@@ -498,7 +504,15 @@ void stepper_interrupt()
     if ( ++segment_buffer_tail == SEGMENT_BUFFER_SIZE) { segment_buffer_tail = 0; }
   }
 
-  st.step_outbits ^= step_port_invert_mask;  // Apply step port invert mask    
+  //st.step_outbits ^= step_port_invert_mask;  // Apply step port invert mask
+  
+  if (bit_istrue(st.step_outbits, (1<<X_STEP_BIT))) {
+    if (bit_istrue(st.dir_outbits, (1<<X_DIRECTION_BIT)))
+      motor_step(IDX_MOTOR1, MOTOR_DIRECTION_FORWARD);
+    else
+      motor_step(IDX_MOTOR1, MOTOR_DIRECTION_BACKWARD);
+  }
+  
   //busy = false;
 // SPINDLE_ENABLE_PORT ^= 1<<SPINDLE_ENABLE_BIT; // Debug: Used to time ISR
 }

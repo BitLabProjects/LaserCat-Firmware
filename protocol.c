@@ -62,6 +62,7 @@
 #define OKPOSITION_COMMAND 11
 #define ASKHASMORESEGMENTBUFFER_COMMAND 12
 #define OKSEGMENTBUFFER_COMMAND 13
+#define OKSTORESEGMENT_COMMAND 14
 #define UNDEFINED_COMMAND 99
 
 struct ProtocolMessage {
@@ -314,7 +315,8 @@ void command_receive_and_execute() {
         for(i=0; i<7; i++)
           *(dst_ptr++) = *(src_ptr++);
         stepper_store_segment_block(&segment);
-        command_send(OK_COMMAND);
+        //command_send(OK_COMMAND);
+        command_send_byte(OKSTORESEGMENT_COMMAND, stepper_has_more_segment_buffer());
         break;
 
       case ASKPOSITION_COMMAND:

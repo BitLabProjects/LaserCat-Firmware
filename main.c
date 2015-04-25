@@ -37,6 +37,7 @@
 //#include "limits.h"
 //#include "probe.h"
 //#include "report.h"
+#include "motor.h"
 
 
 // Declare system global variable structure
@@ -44,6 +45,10 @@ system_t sys;
 
 int main(void)
 {
+  motor_init();
+  //while(1)
+  //  rotazione1();
+    
   // Initialize system upon power-up.
   serial_init();   // Setup serial baud rate and interrupts
 
