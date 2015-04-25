@@ -1,8 +1,8 @@
 #ifndef motor_h
 #define motor_h
 
-#define IDX_MOTOR1 1
-#define IDX_MOTOR2 2
+#define IDX_MOTOR1 0
+#define IDX_MOTOR2 1
 
 #define MOTOR_DIRECTION_FORWARD 1
 #define MOTOR_DIRECTION_BACKWARD 2

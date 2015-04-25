@@ -513,6 +513,13 @@ void stepper_interrupt()
       motor_step(IDX_MOTOR1, MOTOR_DIRECTION_BACKWARD);
   }
   
+  if (bit_istrue(st.step_outbits, (1<<Y_STEP_BIT))) {
+    if (bit_istrue(st.dir_outbits, (1<<Y_DIRECTION_BIT)))
+      motor_step(IDX_MOTOR2, MOTOR_DIRECTION_FORWARD);
+    else
+      motor_step(IDX_MOTOR2, MOTOR_DIRECTION_BACKWARD);
+  }
+  
   //busy = false;
 // SPINDLE_ENABLE_PORT ^= 1<<SPINDLE_ENABLE_BIT; // Debug: Used to time ISR
 }
