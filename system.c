@@ -22,8 +22,6 @@
 #include "settings.h"
 //#include "gcode.h"
 //#include "motion_control.h"
-#include "report.h"
-#include "print.h"
 
 
 void system_init() 

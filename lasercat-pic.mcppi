@@ -6,7 +6,7 @@ Value=0
 [BUILD_TYPE]
 Value=1
 [ACTIVE_TAB]
-Value=NewUnit_2
+Value=system.c
 [USE_EEPROM]
 Value=0
 [USE_HEAP]
@@ -31,16 +31,10 @@ Count=0
 Count=0
 ActiveImageIndex=-1
 [OPENED_FILES]
-Count=9
+Count=3
 File0=stepper.c
-File1=main.c
-File2=protocol.c
-File3=motor.h
-File4=motor.c
-File5=stepper.h
-File6=NewUnit
-File7=NewUnit_1
-File8=NewUnit_2
+File1=system.c
+File2=main.c
 [EEPROM]
 Count=0
 [ACTIVE_COMMENTS_FILES]
@@ -48,13 +42,17 @@ Count=0
 [OTHER_FILES]
 Count=0
 [SEARCH_PATH]
-Count=3
-Path0=C:\Users\Public\Documents\Mikroelektronika\mikroC PRO for PIC\defs\
-Path1=C:\Users\Public\Documents\Mikroelektronika\mikroC PRO for PIC\uses\P18\
-Path2=C:\Dati\bitLab\Progetti\LaserCat\lasercat-pic\
+Count=6
+Path0=C:\Dati\Programmi\mikroC PRO for PIC\defs\
+Path1=C:\Dati\Programmi\mikroC PRO for PIC\uses\P18\
+Path2=C:\Dati\bitLab\Progetti\LaserCat\LaserCat-Firmware\
+Path3=C:\Users\Public\Documents\Mikroelektronika\mikroC PRO for PIC\defs\
+Path4=C:\Users\Public\Documents\Mikroelektronika\mikroC PRO for PIC\uses\P18\
+Path5=C:\Dati\bitLab\Progetti\LaserCat\lasercat-pic\
 [HEADER_PATH]
-Count=1
+Count=2
 Path0=C:\Dati\bitLab\Progetti\LaserCat\lasercat-pic\
+Path1=C:\Dati\bitLab\Progetti\LaserCat\LaserCat-Firmware\
 [HEADERS]
 Count=10
 File0=config.h

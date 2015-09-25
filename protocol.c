@@ -32,7 +32,6 @@
 //#include "planner.h"
 #include "stepper.h"
 //#include "motion_control.h"
-#include "report.h"
 #include "motor.h"
 
 #define CI_START_CHAR '#' //35 decimal
