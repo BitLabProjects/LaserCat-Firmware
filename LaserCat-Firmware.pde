@@ -1,12 +1,9 @@
-#include "motor.h"
+#include "motor.c"
 
 void setup() {
-    // put your setup code here, to run once:
-
-    
+    motor_init();    
 }
 
 void loop() {
-    // put your main code here, to run repeatedly:
-
+     motor_step(IDX_MOTOR1, MOTOR_DIRECTION_FORWARD);
 }
