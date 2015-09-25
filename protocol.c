@@ -33,6 +33,7 @@
 #include "stepper.h"
 //#include "motion_control.h"
 #include "report.h"
+#include "motor.h"
 
 #define CI_START_CHAR '#' //35 decimal
 #define CI_END_CHAR '$' //36 decimal
@@ -63,6 +64,8 @@
 #define ASKHASMORESEGMENTBUFFER_COMMAND 12
 #define OKSEGMENTBUFFER_COMMAND 13
 #define OKSTORESEGMENT_COMMAND 14
+//TODO Riportare SetSpeed dall'altro progetto
+#define MANUALSTEP_COMMAND 16
 #define UNDEFINED_COMMAND 99
 
 struct ProtocolMessage {
@@ -314,6 +317,7 @@ void command_receive_and_execute() {
         src_ptr = (uint8_t*)&rxMessage.data_bytes[1];
         for(i=0; i<7; i++)
           *(dst_ptr++) = *(src_ptr++);
+        stepper_setmode(STEPPERMODE_AUTO);
         stepper_store_segment_block(&segment);
         //command_send(OK_COMMAND);
         command_send_byte(OKSTORESEGMENT_COMMAND, stepper_has_more_segment_buffer());
@@ -325,6 +329,16 @@ void command_receive_and_execute() {
 
       case ASKHASMORESEGMENTBUFFER_COMMAND:
         command_send_byte(OKSEGMENTBUFFER_COMMAND, stepper_has_more_segment_buffer());
+        break;
+        
+      case MANUALSTEP_COMMAND:
+        if (rxMessage.length != 3) {
+          command_send_rxerror(CIRXERROR_INVALIDARGUMENTS);
+          break;
+        }
+        stepper_setmode(STEPPERMODE_MANUAL);
+        stepper_manualstep(rxMessage.data_bytes[1], rxMessage.data_bytes[2]);
+        command_send(OK_COMMAND);
         break;
 
       case UNDEFINED_COMMAND:

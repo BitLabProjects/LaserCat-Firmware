@@ -40,6 +40,12 @@ void st_wake_up(uint8_t setup_and_enable_motors);
 // Immediately disables steppers
 void st_go_idle(uint8_t delay_and_disable_steppers);
 
+#define STEPPERMODE_MANUAL 0
+#define STEPPERMODE_AUTO 1
+void stepper_setmode(uint8_t mode);
+
+void stepper_manualstep(uint8_t idxMotor, uint8_t motorDirection);
+
 // Reset the stepper subsystem variables       
 void st_reset();
 

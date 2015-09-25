@@ -23,19 +23,19 @@
 
 //-- Motor2
 //Coil 1
-#define Motor2_Coil1_Direction_TrisBit TRISD6_bit
-#define Motor2_Coil1_Direction_PortBit LATD6_bit
-#define Motor2_Coil1_OnOff1_TrisBit TRISD7_bit
-#define Motor2_Coil1_OnOff1_PortBit LATD7_bit
-#define Motor2_Coil1_OnOff2_TrisBit TRISD5_bit
-#define Motor2_Coil1_OnOff2_PortBit LATD5_bit
+#define Motor2_Coil1_Direction_TrisBit TRISD3_bit
+#define Motor2_Coil1_Direction_PortBit LATD3_bit
+#define Motor2_Coil1_OnOff1_TrisBit TRISD4_bit
+#define Motor2_Coil1_OnOff1_PortBit LATD4_bit
+#define Motor2_Coil1_OnOff2_TrisBit TRISD2_bit
+#define Motor2_Coil1_OnOff2_PortBit LATD2_bit
 //Coil 2
-#define Motor2_Coil2_Direction_TrisBit TRISD3_bit
-#define Motor2_Coil2_Direction_PortBit LATD3_bit
-#define Motor2_Coil2_OnOff1_TrisBit TRISD4_bit
-#define Motor2_Coil2_OnOff1_PortBit LATD4_bit
-#define Motor2_Coil2_OnOff2_TrisBit TRISD2_bit
-#define Motor2_Coil2_OnOff2_PortBit LATD2_bit
+#define Motor2_Coil2_Direction_TrisBit TRISD6_bit
+#define Motor2_Coil2_Direction_PortBit LATD6_bit
+#define Motor2_Coil2_OnOff1_TrisBit TRISD7_bit
+#define Motor2_Coil2_OnOff1_PortBit LATD7_bit
+#define Motor2_Coil2_OnOff2_TrisBit TRISD5_bit
+#define Motor2_Coil2_OnOff2_PortBit LATD5_bit
 
 void Motor_Coil1(uint8_t idxMotor, uint8_t state);
 void Motor_Coil2(uint8_t idxMotor, uint8_t state);
