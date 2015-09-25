@@ -1,4 +1,3 @@
-#include "system.h"
 #include "motor.h"
 
 #define COIL_OFF 0

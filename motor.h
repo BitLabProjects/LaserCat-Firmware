@@ -1,6 +1,9 @@
 #ifndef motor_h
 #define motor_h
 
+#include <stdint.h>
+#include <stdbool.h>
+
 #define IDX_MOTOR1 0
 #define IDX_MOTOR2 1
 #define IDX_MOTORNONE 255
